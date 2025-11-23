@@ -1,6 +1,8 @@
 package client.Screen;
 
 import client.Screen.util.ImagePanel;
+import client.KeyEvent.StartEvent;
+import client.KeyEvent.ExitEvent;
 
 import javax.swing.*;
 import java.awt.*;
@@ -104,6 +106,12 @@ public class MainScreen extends JPanel {
         }
 
         panel.add(button);
+        if ("참가하기".equals(text)) {
+            button.addActionListener(new StartEvent());
+        }
+        if ("종료".equals(text)) {
+            button.addActionListener(new ExitEvent());
+        }
         return panel;
     }
 }

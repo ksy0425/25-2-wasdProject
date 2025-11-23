@@ -2,9 +2,12 @@ package server;
 
 import javax.swing.*;
 import java.awt.*;
+import java.net.ServerSocket;
+import java.net.Socket;
 
 public class ServerWindow  extends JFrame {
     private JTextArea t_display;
+    private ServerHandler serverHandler;
 
     public ServerWindow() {
         super("Server");
@@ -15,6 +18,8 @@ public class ServerWindow  extends JFrame {
 
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         setVisible(true);
+
+        startServer();
     }
 
     private void buildGUI() {
@@ -28,4 +33,22 @@ public class ServerWindow  extends JFrame {
         panel.add(scrollPane, BorderLayout.CENTER);
         return panel;
     }
+
+    public void startServer() {
+        System.out.println("서버 시작...");
+        try (ServerSocket serverSocket = new ServerSocket(54321)) {
+            //GameRoom gameRoom = new GameRoom();
+
+            while (true) {
+                Socket clientSocket = serverSocket.accept();
+                System.out.println("클라이언트가 연결되었습니다...");
+
+                ServerHandler handler = new ServerHandler(clientSocket);
+                handler.start();
+            }
+        } catch (Exception e) {
+            System.out.println(e);
+        }
+    }
+
 }
