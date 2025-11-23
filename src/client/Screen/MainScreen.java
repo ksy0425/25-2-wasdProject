@@ -1,86 +1,98 @@
 package client.Screen;
 
+import client.Screen.util.ImagePanel;
+
 import javax.swing.*;
-import javax.swing.border.EmptyBorder;
 import java.awt.*;
 
-public class MainScreen extends JFrame {
+public class MainScreen extends JPanel {
     private JButton b_host, b_participation, b_exit;
+    private ClientWindow window;
 
-    public MainScreen() {
-        super("WASD: 부기의 모험");
+    public MainScreen(ClientWindow window) {
+        this.window = window;
 
-        setContentPane(new BackgroundPanel("/Main_Background.png")); // 🔥 배경 설정
-
-        buildGUI();
-
-        setSize(1400, 800);
-        setLocation(100, 10);
-
-        setDefaultCloseOperation(EXIT_ON_CLOSE);
-        setVisible(true);
-    }
-
-    private void buildGUI() {
         setLayout(new BorderLayout());
+        setOpaque(false);
 
-        // 패널들은 배경이 보이도록 반드시 투명하게!
-        JPanel titlePanel = createTitlePanel();
-        titlePanel.setOpaque(false);
+        BackgroundPanel bgPanel = new BackgroundPanel("/Main_Background.png");
+        bgPanel.setLayout(new BorderLayout());
+        add(bgPanel, BorderLayout.CENTER);
 
-        JPanel controlPanel = createControlPanel();
-        controlPanel.setOpaque(false);
-
-        add(titlePanel, BorderLayout.NORTH);
-        add(controlPanel, BorderLayout.CENTER);
+        buildGUI(bgPanel);
+        initActions();
     }
 
-    // 🔹 타이틀 이미지
+    private void initActions() {
+        b_host.addActionListener(e -> window.showScreen("host"));
+        b_participation.addActionListener(e -> window.showScreen("participation"));
+        b_exit.addActionListener(e -> System.exit(0));
+    }
+
+    private void buildGUI(JPanel bgPanel) {
+        JPanel centerPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
+        centerPanel.setOpaque(false);
+        bgPanel.add(centerPanel, BorderLayout.CENTER);
+
+        JPanel wrapper = new JPanel(new BorderLayout());
+        wrapper.setOpaque(false);
+
+        JPanel spacerPanel = new JPanel();
+        spacerPanel.setOpaque(false);
+        spacerPanel.setPreferredSize(new Dimension(1, 60));
+
+        wrapper.add(spacerPanel, BorderLayout.NORTH);
+
+        JPanel verticalPanel = new JPanel(new GridLayout(2, 1, 0, 40));
+        verticalPanel.setOpaque(false);
+
+        verticalPanel.add(createTitlePanel());
+        verticalPanel.add(createControlPanel());
+
+        wrapper.add(verticalPanel, BorderLayout.CENTER);
+
+        centerPanel.add(wrapper);
+    }
+
     private JPanel createTitlePanel() {
-        JPanel titlePanel = new JPanel();
-        titlePanel.setLayout(new BoxLayout(titlePanel, BoxLayout.Y_AXIS));
-        titlePanel.setBorder(new EmptyBorder(100, 0, 0, 0));
+        JPanel titlePanel = new JPanel(new GridLayout(2, 1));
         titlePanel.setOpaque(false);
 
-        ImageIcon wasdIcon = new ImageIcon(getClass().getResource("/WASD.png"));
-        ImageIcon adventureIcon = new ImageIcon(getClass().getResource("/AdventureOfBugi.png"));
+        ImagePanel wasdPanel = new ImagePanel("/WASD.png", 350, 150);
+        ImagePanel adventurePanel = new ImagePanel("/AdventureOfBugi.png", 300, 130);
 
-        Image wasdImg = wasdIcon.getImage().getScaledInstance(350, -1, Image.SCALE_SMOOTH);
-        Image adventureImg = adventureIcon.getImage().getScaledInstance(300, -1, Image.SCALE_SMOOTH);
+        JPanel wrap1 = new JPanel(new FlowLayout(FlowLayout.CENTER));
+        wrap1.setOpaque(false);
+        wrap1.add(wasdPanel);
 
-        JLabel title1 = new JLabel(new ImageIcon(wasdImg));
-        JLabel title2 = new JLabel(new ImageIcon(adventureImg));
+        JPanel wrap2 = new JPanel(new FlowLayout(FlowLayout.CENTER));
+        wrap2.setOpaque(false);
+        wrap2.add(adventurePanel);
 
-        title1.setAlignmentX(Component.CENTER_ALIGNMENT);
-        title2.setAlignmentX(Component.CENTER_ALIGNMENT);
-
-        titlePanel.add(title1);
-        titlePanel.add(title2);
+        titlePanel.add(wrap1);
+        titlePanel.add(wrap2);
 
         return titlePanel;
     }
 
     private JPanel createControlPanel() {
-        JPanel flowPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
-        flowPanel.setOpaque(false);
-        flowPanel.setBorder(new EmptyBorder(50, 0, 0, 0));
+        JPanel controlPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
+        controlPanel.setOpaque(false);
 
-        JPanel gridPanel = new JPanel(new GridLayout(0, 1));
+        JPanel gridPanel = new JPanel(new GridLayout(3, 1, 0, 15));
         gridPanel.setOpaque(false);
 
-        gridPanel.add(createButtonCell("호스트", 10, 0, 0, 0));
-        gridPanel.add(createButtonCell("참가하기", 10, 0, 0, 0));
-        gridPanel.add(createButtonCell("종료", 10, 0, 0, 0));
+        gridPanel.add(createButtonCell("호스트"));
+        gridPanel.add(createButtonCell("참가하기"));
+        gridPanel.add(createButtonCell("종료"));
 
-        flowPanel.add(gridPanel);
-
-        return flowPanel;
+        controlPanel.add(gridPanel);
+        return controlPanel;
     }
 
-    private JPanel createButtonCell(String text, int top, int left, int bottom, int right) {
-        JPanel panel = new JPanel();
-        panel.setOpaque(false); // 배경 보이기
-        panel.setBorder(new EmptyBorder(top, left, bottom, right));
+    private JPanel createButtonCell(String text) {
+        JPanel panel = new JPanel(new FlowLayout(FlowLayout.CENTER));
+        panel.setOpaque(false);
 
         JButton button = new JButton(text);
         button.setPreferredSize(new Dimension(400, 50));

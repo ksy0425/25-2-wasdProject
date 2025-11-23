@@ -1,6 +1,6 @@
 package client;
 
-import client.Screen.MainScreen;
+import client.Screen.ClientWindow;
 
 public class ClientMain {
     private String serverAddress, userId;
@@ -11,6 +11,6 @@ public class ClientMain {
         this.serverPort = serverPort;
     }
     public static void main(String[] args) {
-        new MainScreen();
+        new ClientWindow();
     }
 }
