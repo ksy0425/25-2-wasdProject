@@ -1,9 +1,9 @@
-package client.Screen;
+package client.Screen.util;
 
 import javax.swing.*;
 import java.awt.*;
 
-class BackgroundPanel extends JPanel {
+public class BackgroundPanel extends JPanel {
     private Image background;
 
     public BackgroundPanel(String path) {

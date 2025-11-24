@@ -16,7 +16,8 @@ public class ClientWindow extends JFrame {
 
         // 화면 등록
         container.add(new MainScreen(this), "main");
-        container.add(new HostScreen(this), "host");
+        container.add(new HostScreen(this, "방 정보"), "host");
+        container.add(new CreateRoomScreen(this), "create");
         container.add(new ParticipationScreen(this), "participation");
 
         add(container);

@@ -1,5 +1,6 @@
 package client.Screen;
 
+import client.Screen.util.BackgroundPanel;
 import client.Screen.util.ImagePanel;
 import client.KeyEvent.StartEvent;
 import client.KeyEvent.ExitEvent;
@@ -26,7 +27,7 @@ public class MainScreen extends JPanel {
     }
 
     private void initActions() {
-        b_host.addActionListener(e -> window.showScreen("host"));
+        b_host.addActionListener(e -> window.showScreen("create"));
         b_participation.addActionListener(e -> window.showScreen("participation"));
         b_exit.addActionListener(e -> System.exit(0));
     }
