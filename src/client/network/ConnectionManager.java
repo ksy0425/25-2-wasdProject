@@ -11,6 +11,14 @@ public class ConnectionManager {
     public static Socket socket;
     public static ObjectOutputStream out;
     public static ObjectInputStream in;
+    private static String nickname;
+
+    public static void setNickname(String n) {
+        nickname = n;
+    }
+    public static String getNickname() {
+        return nickname;
+    }
 
     public static void connect(String host, int port) {
         try {

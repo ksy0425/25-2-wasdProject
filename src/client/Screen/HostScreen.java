@@ -12,11 +12,12 @@ public class HostScreen extends JPanel {
 
     private ClientWindow window;
     private JButton b_back;
-    private String title = "방 정보"; // ★ title 변수가 필요하므로 임시로 추가 (기존 코드와 동일하게 유지)
+    private String title;
 
-    public HostScreen(ClientWindow window, String title) {
+    public HostScreen(ClientWindow window) {
         this.window = window;
-        this.title = title;
+        this.title = window.getRoomTitle();
+        System.out.println("title : " + title);
 
         setLayout(new BorderLayout());
         setOpaque(false);
@@ -30,32 +31,19 @@ public class HostScreen extends JPanel {
 
     private void buildGUI(JPanel bgPanel) {
 
-        JPanel centerPanel = createCenterPanel(bgPanel);
-        JPanel verticalPanel = createVerticalPanel(centerPanel);
+        JPanel centerPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
+        centerPanel.setOpaque(false);
+        bgPanel.add(centerPanel, BorderLayout.CENTER);
+
+        JPanel verticalPanel = new JPanel();
+        verticalPanel.setOpaque(false);
+        verticalPanel.setLayout(new BorderLayout());
+        centerPanel.add(verticalPanel);
 
         // 각각의 메서드에서 패널을 리턴받아 add만 처리
         verticalPanel.add(createTitleSection(), BorderLayout.NORTH);
         verticalPanel.add(createRoomCard(), BorderLayout.CENTER);
         verticalPanel.add(createSouthButtonSection(), BorderLayout.SOUTH);
-
-        createRoomPanel(); // RoomPanel은 추가만 하면 됨
-    }
-
-    // CENTER 영역 생성
-    private JPanel createCenterPanel(JPanel bgPanel) {
-        JPanel centerPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
-        centerPanel.setOpaque(false);
-        bgPanel.add(centerPanel, BorderLayout.CENTER);
-        return centerPanel;
-    }
-
-    // 세로 레이아웃 패널 생성
-    private JPanel createVerticalPanel(JPanel centerPanel) {
-        JPanel verticalPanel = new JPanel();
-        verticalPanel.setOpaque(false);
-        verticalPanel.setLayout(new BorderLayout());
-        centerPanel.add(verticalPanel);
-        return verticalPanel;
     }
 
     // 상단 타이틀 생성
@@ -81,6 +69,9 @@ public class HostScreen extends JPanel {
         roomCard.setBackground(new Color(255, 255, 255, 220));
         roomCard.setLayout(new BorderLayout());
         roomCard.setPreferredSize(new Dimension(1000, 500));
+
+        roomCard.add(createRoomPanel());
+
         return roomCard;
     }
 
@@ -98,6 +89,7 @@ public class HostScreen extends JPanel {
         JButton exitButton = new JButton("   나가기   ");
         exitButton.setFont(new Font("Dialog", Font.BOLD, 40));
         exitButton.setBackground(Color.GREEN);
+        exitButton.addActionListener(e -> window.showScreen("main"));
         leftPanel.add(exitButton);
 
         JPanel rightPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
@@ -116,12 +108,14 @@ public class HostScreen extends JPanel {
     }
 
     // 참가자 목록 패널 생성
-    private void createRoomPanel() {
+    private JPanel createRoomPanel() {
         RoomPanel roomPanel = new RoomPanel();
         roomPanel.setOpaque(false);
         // roomCard의 CENTER에 roomPanel 추가
         // RoomPanel을 생성하고 직접 add 하면 됨
         roomPanel.addParticipant("Player1");
         roomPanel.addParticipant("Player2");
+
+        return roomPanel;
     }
 }

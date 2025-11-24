@@ -1,42 +1,40 @@
 package server;
 
-import shared.packet.Packet;
-
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
+import java.net.ServerSocket;
 import java.net.Socket;
 
-public class ServerHandler extends Thread{
-    private Socket socket;
-    private GameRoom gameRoom;
-    private ObjectInputStream in;
-    private ObjectOutputStream out;
-    //private int playerId;
+public class ServerHandler extends Thread {
 
-    public ServerHandler(Socket clentSocket) {
-        this.socket = clentSocket;
+    private final int port;
+    private final GameRoom gameRoom;
+    private final ServerWindow window;
+
+    public ServerHandler(int port, GameRoom gameRoom, ServerWindow window) {
+        this.port = port;
+        this.gameRoom = gameRoom;
+        this.window = window;
     }
 
     @Override
     public void run() {
-        try {
-            out  = new ObjectOutputStream(socket.getOutputStream());
-            in   = new ObjectInputStream(socket.getInputStream());
+        try (ServerSocket serverSocket = new ServerSocket(port)) {
 
-            //playerId = gameRoom.addPlayer(this);
+            window.printDisplay("서버가 포트 " + port + "에서 시작되었습니다.");
+            System.out.println("[SERVER] listening on port " + port);
 
             while (true) {
-                Packet packet = (Packet) in.readObject();
-                System.out.println("[SERVER] packet received: " + packet.getClass());
-                //gameRoom.processPacket(packet, playerId);
+                Socket clientSocket = serverSocket.accept();
+                window.printDisplay("클라이언트 접속: " + clientSocket.getInetAddress());
+                System.out.println("[SERVER] client connected: " + clientSocket);
+
+                // 클라이언트별 스레드 생성
+                ClientHandler handler = new ClientHandler(clientSocket, gameRoom, window);
+                handler.start();
             }
 
         } catch (Exception e) {
-            //gameRoom.removePlayer(playerId);
+            window.printDisplay("서버 오류: " + e.getMessage());
+            e.printStackTrace();
         }
-    }
-
-    public void send(Packet packet) {
-        try { out.writeObject(packet); } catch (Exception ignored) {}
     }
 }

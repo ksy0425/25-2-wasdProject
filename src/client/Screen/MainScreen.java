@@ -28,7 +28,7 @@ public class MainScreen extends JPanel {
 
     private void initActions() {
         b_host.addActionListener(e -> window.showScreen("create"));
-        b_participation.addActionListener(e -> window.showScreen("participation"));
+        b_participation.addActionListener(e -> window.showScreen("join"));
         b_exit.addActionListener(e -> System.exit(0));
     }
 
@@ -107,9 +107,6 @@ public class MainScreen extends JPanel {
         }
 
         panel.add(button);
-        if ("참가하기".equals(text)) {
-            button.addActionListener(new StartEvent());
-        }
         if ("종료".equals(text)) {
             button.addActionListener(new ExitEvent());
         }
