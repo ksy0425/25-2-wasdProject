@@ -27,7 +27,6 @@ public class ServerHandler extends Thread {
                 window.printDisplay("클라이언트 접속: " + clientSocket.getInetAddress());
                 System.out.println("[SERVER] client connected: " + clientSocket);
 
-                // 클라이언트별 스레드 생성
                 ClientHandler handler = new ClientHandler(clientSocket, gameRoom, window);
                 handler.start();
             }

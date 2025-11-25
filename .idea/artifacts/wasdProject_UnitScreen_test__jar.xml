@@ -1,0 +1,11 @@
+<component name="ArtifactManager">
+  <artifact type="jar" name="wasdProject_UnitScreen(test):jar">
+    <output-path>$PROJECT_DIR$/out/artifacts/wasdProject_UnitScreen_test__jar</output-path>
+    <root id="archive" name="wasdProject_UnitScreen(test).jar">
+      <element id="directory" name="META-INF">
+        <element id="file-copy" path="$PROJECT_DIR$/src/resources/test/META-INF/MANIFEST.MF" />
+      </element>
+      <element id="module-output" name="wasdProject" />
+    </root>
+  </artifact>
+</component>

@@ -38,7 +38,6 @@ public class LoginScreen extends JPanel {
         btn.setAlignmentX(Component.CENTER_ALIGNMENT);
         btn.addActionListener(e -> onLoginClicked());
 
-        // 여백용
         panel.add(Box.createVerticalGlue());
         panel.add(title);
         panel.add(Box.createRigidArea(new Dimension(0, 20)));
@@ -58,13 +57,10 @@ public class LoginScreen extends JPanel {
             return;
         }
 
-        // 🔥 1) 서버로 LoginPacket 보내기
         ClientSender.send(new LoginPacket(nickname));
 
-        // 🔥 2) ClientWindow에 저장 (원하면)
         ConnectionManager.setNickname(nickname);
 
-        // 🔥 3) 메인 화면으로 이동
         window.showScreen("main");
     }
 }

@@ -40,13 +40,11 @@ public class HostScreen extends JPanel {
         verticalPanel.setLayout(new BorderLayout());
         centerPanel.add(verticalPanel);
 
-        // 각각의 메서드에서 패널을 리턴받아 add만 처리
         verticalPanel.add(createTitleSection(), BorderLayout.NORTH);
         verticalPanel.add(createRoomCard(), BorderLayout.CENTER);
         verticalPanel.add(createSouthButtonSection(), BorderLayout.SOUTH);
     }
 
-    // 상단 타이틀 생성
     private JPanel createTitleSection() {
         JPanel titlePanel = new JPanel(new BorderLayout());
         titlePanel.setOpaque(false);
@@ -63,7 +61,6 @@ public class HostScreen extends JPanel {
         return titlePanel;
     }
 
-    // 둥근 흰색 박스 생성
     private JPanel createRoomCard() {
         RoundedPanel roomCard = new RoundedPanel(30);
         roomCard.setBackground(new Color(255, 255, 255, 220));
@@ -75,7 +72,6 @@ public class HostScreen extends JPanel {
         return roomCard;
     }
 
-    // 아래쪽 버튼 영역 생성
     private JPanel createSouthButtonSection() {
         JPanel southPanel = new JPanel(new BorderLayout());
         southPanel.setOpaque(false);
@@ -107,12 +103,9 @@ public class HostScreen extends JPanel {
         return southPanel;
     }
 
-    // 참가자 목록 패널 생성
     private JPanel createRoomPanel() {
         RoomPanel roomPanel = new RoomPanel();
         roomPanel.setOpaque(false);
-        // roomCard의 CENTER에 roomPanel 추가
-        // RoomPanel을 생성하고 직접 add 하면 됨
         roomPanel.addParticipant("Player1");
         roomPanel.addParticipant("Player2");
 

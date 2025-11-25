@@ -13,10 +13,6 @@ public class ClientReceiver extends Thread {
             while (true) {
                 Packet p = (Packet) ConnectionManager.in.readObject();
 
-//                if (p instanceof SyncPacket sync) {
-//                    System.out.println("[CLIENT] SyncPacket received, players=" + sync.players.size());
-//                    GameState.updatePlayers(sync.players);
-//                }
             }
         } catch (Exception e) {
             System.out.println("Disconnected.");

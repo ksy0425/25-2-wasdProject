@@ -18,7 +18,7 @@ public class UnitScreen_test extends JPanel {
         setFocusable(true);
 
         unit = new Unit(Color.BLUE, 200, 200);
-        input = new KeyInput(KeyEvent.VK_D); // ← D만 테스트
+        input = new KeyInput(KeyEvent.VK_D); // D만 테스트 오른쪽 이동
         addKeyListener(input);
 
         loop = new GameLoop(this::updateGame);

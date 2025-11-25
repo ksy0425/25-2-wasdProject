@@ -32,10 +32,7 @@ public class ServerWindow extends JFrame {
         return panel;
     }
 
-    /** UI 로그 출력만 담당 */
     public void printDisplay(String str) {
-        SwingUtilities.invokeLater(() ->
-                t_display.append(str + "\n")
-        );
+        t_display.append(str + "\n");
     }
 }

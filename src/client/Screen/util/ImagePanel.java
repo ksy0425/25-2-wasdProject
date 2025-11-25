@@ -13,19 +13,17 @@ public class ImagePanel extends JPanel {
         this.width = width;
         this.height = height;
 
-        // 리소스 기반 이미지 로드
         ImageIcon icon = new ImageIcon(getClass().getResource(resourcePath));
         this.image = icon.getImage();
 
         setPreferredSize(new Dimension(width, height));
-        setOpaque(false); // 배경 투명
+        setOpaque(false);
     }
 
     @Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
 
-        // 원하는 크기에 맞춰 그리기
         g.drawImage(image, 0, 0, width, height, this);
     }
 }

@@ -86,10 +86,9 @@ public class CreateRoomScreen extends JPanel {
         b_create.setFont(new Font("Dialog", Font.BOLD, 40));
         b_create.setBackground(Color.GREEN);
 
-        // 버튼 클릭 시 방 제목을 ClientWindow에 설정
         b_create.addActionListener(e -> {
-            window.setRoomTitle(t_roomTitle.getText());  // 입력된 제목을 ClientWindow에 설정
-            window.showScreen("host");  // HostScreen으로 화면 전환
+            window.setRoomTitle(t_roomTitle.getText());
+            window.showScreen("host");
         });
 
         flowCreatePanel.add(b_create);

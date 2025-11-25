@@ -25,7 +25,6 @@ public class GameRoom {
     public synchronized void removeClient(ClientHandler handler) {
         clients.remove(handler);
 
-        // playerId를 알 수 있어야 하는데, handler 안에 playerId 저장되어 있음
         int id = handler.getPlayerId();
         playerNicknames.remove(id);
 

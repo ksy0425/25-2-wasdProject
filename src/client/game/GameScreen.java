@@ -29,7 +29,7 @@ public class GameScreen extends JPanel {
         unit.isMovingBottom = keyInput.isDown();
         unit.isMovingRight = keyInput.isRight();
 
-        unit.move(); // 기존 Unit.move() 그대로 사용
+        unit.move();
         repaint();
     }
 
