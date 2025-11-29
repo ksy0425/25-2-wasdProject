@@ -1,43 +1,63 @@
 package server;
 
 import shared.packet.Packet;
-import java.util.Map;
+import shared.packet.RoomInfoPacket;
+
+import java.util.List;
 import java.util.Vector;
-import java.util.concurrent.ConcurrentHashMap;
 
 public class GameRoom {
 
-    private final Vector<ClientHandler> clients = new Vector<>();
-    private final Map<Integer, String> playerNicknames = new ConcurrentHashMap<>();
+    private final String roomTitle;
+    private final ClientHandler host;
+    private final Vector<ClientHandler> players = new Vector<>();
 
-    private int nextPlayerId = 1;
+    private final int MAX_PLAYER = 4;
 
-    public synchronized int addClient(ClientHandler handler, String nickname) {
-        clients.add(handler);
-
-        int id = nextPlayerId++;
-        playerNicknames.put(id, nickname);
-
-        System.out.println("[GameRoom] 클라이언트 추가. ID=" + id + ", 닉네임=" + nickname);
-        return id;
+    public GameRoom(String roomTitle, ClientHandler host) {
+        this.roomTitle = roomTitle;
+        this.host = host;
+        players.add(host);
     }
 
-    public synchronized void removeClient(ClientHandler handler) {
-        clients.remove(handler);
+    public synchronized boolean join(ClientHandler client) {
+        if (players.size() >= MAX_PLAYER) return false;
 
-        int id = handler.getPlayerId();
-        playerNicknames.remove(id);
-
-        System.out.println("[GameRoom] 클라이언트 제거. ID=" + id);
+        players.add(client);
+        broadcastRoomInfo();
+        return true;
     }
 
-    public String getNickname(int playerId) {
-        return playerNicknames.get(playerId);
+    public synchronized void leave(ClientHandler client) {
+        players.remove(client);
+        broadcastRoomInfo();
     }
 
     public synchronized void broadcast(Packet packet) {
-        for (ClientHandler client : clients) {
-            client.send(packet);
+        for (ClientHandler p : players) {
+            p.send(packet);
         }
+    }
+
+    public synchronized void broadcastRoomInfo() {
+        List<Integer> ids = players.stream()
+                .map(ClientHandler::getPlayerId)
+                .toList();
+
+        RoomInfoPacket info = new RoomInfoPacket(
+                roomTitle,
+                host.getPlayerId(),
+                ids
+        );
+
+        broadcast(info);
+    }
+
+    public String getRoomTitle() {
+        return roomTitle;
+    }
+
+    public int getPlayerCount() {
+        return players.size();
     }
 }

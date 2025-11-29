@@ -6,9 +6,9 @@ public class ServerMain {
 
         ServerWindow window = new ServerWindow();
 
-        GameRoom gameRoom = new GameRoom();
+        RoomManager roomManager = new RoomManager(window);
 
-        ServerHandler serverHandler = new ServerHandler(54321, gameRoom, window);
+        ServerHandler serverHandler = new ServerHandler(54321, roomManager, window);
         serverHandler.start();
     }
 }

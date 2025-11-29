@@ -10,16 +10,16 @@ import java.net.Socket;
 public class ClientHandler extends Thread {
 
     private final Socket socket;
-    private final GameRoom gameRoom;
+    private final RoomManager roomManager;
     private final ServerWindow window;
 
     private ObjectInputStream in;
     private ObjectOutputStream out;
     private int playerId;
 
-    public ClientHandler(Socket socket, GameRoom gameRoom, ServerWindow window) {
+    public ClientHandler(Socket socket, RoomManager roomManager, ServerWindow window) {
         this.socket = socket;
-        this.gameRoom = gameRoom;
+        this.roomManager = roomManager;
         this.window = window;
     }
 
@@ -29,33 +29,30 @@ public class ClientHandler extends Thread {
             out = new ObjectOutputStream(socket.getOutputStream());
             in  = new ObjectInputStream(socket.getInputStream());
 
-            // 🔥 1) 최초 패킷 = LoginPacket
-            Packet firstPacket = (Packet) in.readObject();
-            if (!(firstPacket instanceof LoginPacket login)) {
+            PacketHandler handler = new PacketHandler(this, roomManager, window);
+
+            Packet first = (Packet) in.readObject();
+            if (!(first instanceof LoginPacket login)) {
                 window.printDisplay("잘못된 최초 패킷 수신. 접속 종료.");
                 socket.close();
                 return;
             }
 
             String nickname = login.getNickname();
-
-            // 🔥 2) GameRoom에 등록 (ID + 닉네임)
-            this.playerId = gameRoom.addClient(this, nickname);
+            this.playerId = roomManager.addClient(this, nickname);
 
             window.printDisplay("플레이어 접속: ID=" + playerId + ", 닉네임=" + nickname);
 
-            // 🔥 3) 이후부터는 일반 패킷 처리
             while (true) {
                 Packet packet = (Packet) in.readObject();
-
-                System.out.println("[SERVER] packet received: " + packet.getClass().getSimpleName());
-                window.printDisplay("패킷 수신(ID=" + playerId + "): " + packet.getClass().getSimpleName());
+                handler.handle(packet);
             }
 
         } catch (Exception e) {
             window.printDisplay("플레이어 종료: ID=" + playerId);
+
         } finally {
-            gameRoom.removeClient(this);
+            roomManager.removeClient(this);
             try { socket.close(); } catch (Exception ignore) {}
         }
     }
@@ -71,3 +68,4 @@ public class ClientHandler extends Thread {
         } catch (Exception ignored) {}
     }
 }
+

@@ -6,12 +6,12 @@ import java.net.Socket;
 public class ServerHandler extends Thread {
 
     private final int port;
-    private final GameRoom gameRoom;
+    private final RoomManager roomManager;
     private final ServerWindow window;
 
-    public ServerHandler(int port, GameRoom gameRoom, ServerWindow window) {
+    public ServerHandler(int port, RoomManager roomManager, ServerWindow window) {
         this.port = port;
-        this.gameRoom = gameRoom;
+        this.roomManager = roomManager;
         this.window = window;
     }
 
@@ -27,7 +27,7 @@ public class ServerHandler extends Thread {
                 window.printDisplay("클라이언트 접속: " + clientSocket.getInetAddress());
                 System.out.println("[SERVER] client connected: " + clientSocket);
 
-                ClientHandler handler = new ClientHandler(clientSocket, gameRoom, window);
+                ClientHandler handler = new ClientHandler(clientSocket, roomManager, window);
                 handler.start();
             }
 

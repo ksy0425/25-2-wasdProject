@@ -9,7 +9,7 @@ public class ClientWindow extends JFrame {
 
     private CardLayout cardLayout;
     private JPanel container;
-    private String roomTitle;  // 방 제목을 저장할 변수
+    private String roomTitle;
 
     public ClientWindow() {
         super("WASD: 부기의 모험");
@@ -29,26 +29,22 @@ public class ClientWindow extends JFrame {
         setVisible(true);
     }
 
-    // 방 제목을 설정하는 메서드
     public void setRoomTitle(String roomTitle) {
         this.roomTitle = roomTitle;
     }
 
-    // 방 제목을 가져오는 메서드
     public String getRoomTitle() {
         return this.roomTitle;
     }
 
     public void showScreen(String name) {
-        // 해당 화면을 동적으로 생성
         JPanel newScreen = createScreen(name);
 
-        // 화면을 새로 추가하고 전환
-        container.removeAll();  // 기존 화면 제거
+        container.removeAll();
         container.add(newScreen, name);
         cardLayout.show(container, name);
-        container.revalidate();  // 레이아웃을 재계산
-        container.repaint();  // 화면을 다시 그리기
+        container.revalidate();
+        container.repaint();
     }
 
     private JPanel createScreen(String name) {
@@ -58,7 +54,7 @@ public class ClientWindow extends JFrame {
             case "main":
                 return new MainScreen(this);
             case "host":
-                return new HostScreen(this);  // 방 제목을 HostScreen으로 전달
+                return new HostScreen(this);
             case "create":
                 return new CreateRoomScreen(this);
             case "participation":
