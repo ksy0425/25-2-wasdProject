@@ -1,5 +1,6 @@
 package client.Screen;
 
+import client.KeyEvent.LeaveRoomEvent;
 import client.Screen.util.BackgroundPanel;
 import client.Screen.util.RoomPanel;
 import client.Screen.util.RoundedPanel;
@@ -85,7 +86,8 @@ public class HostScreen extends JPanel {
         JButton exitButton = new JButton("   나가기   ");
         exitButton.setFont(new Font("Dialog", Font.BOLD, 40));
         exitButton.setBackground(Color.GREEN);
-        exitButton.addActionListener(e -> window.showScreen("main"));
+        //exitButton.addActionListener(e -> window.showScreen("main"));
+        exitButton.addActionListener(new LeaveRoomEvent(window));
         leftPanel.add(exitButton);
 
         JPanel rightPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));

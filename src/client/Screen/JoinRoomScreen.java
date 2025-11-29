@@ -1,5 +1,7 @@
 package client.Screen;
 
+import client.KeyEvent.InputRoomEvent;
+import client.KeyEvent.JoinRoomEvent;
 import client.Screen.util.BackgroundPanel;
 import client.Screen.util.RoundedPanel;
 import client.Screen.util.SpacerPanel;
@@ -73,6 +75,7 @@ public class JoinRoomScreen extends JPanel {
         t_roomTitle.setFont(new Font("Dialog", Font.BOLD, 40));
         t_roomTitle.setForeground(new Color(245, 245, 220));
         t_roomTitle.setBorder(new EmptyBorder(3,10,0,0));
+        t_roomTitle.addMouseListener(new InputRoomEvent(t_roomTitle));
 
         titlePanel.add(t_roomTitle);
         flowTitlePanel.add(titlePanel);
@@ -83,7 +86,8 @@ public class JoinRoomScreen extends JPanel {
         JButton b_join = new JButton("참가하기");
         b_join.setFont(new Font("Dialog", Font.BOLD, 40));
         b_join.setBackground(Color.GREEN);
-        b_join.addActionListener(e -> window.showScreen("host"));
+        //b_join.addActionListener(e -> window.showScreen("host"));
+        b_join.addActionListener(new JoinRoomEvent(t_roomTitle, window));
 
         flowCreatePanel.add(b_join);
 

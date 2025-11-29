@@ -2,13 +2,12 @@ package shared.packet;
 
 public class CreateRoomRequestPacket extends Packet {
     private String roomTitle;
-    private int hostId;
+    // private int hostId;
 
-    public CreateRoomRequestPacket(String roomTitle, int hostId) {
+    public CreateRoomRequestPacket(String roomTitle) {
         this.roomTitle = roomTitle;
-        this.hostId = hostId;
     }
 
     public String getRoomTitle() { return roomTitle; }
-    public int getHostId() { return hostId; }
+    //public int getHostId() { return hostId; }
 }

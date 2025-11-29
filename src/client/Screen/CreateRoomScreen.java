@@ -1,8 +1,11 @@
 package client.Screen;
 
+import client.KeyEvent.CreateRoomEvent;
+import client.KeyEvent.InputRoomEvent;
 import client.Screen.util.BackgroundPanel;
 import client.Screen.util.RoundedPanel;
 import client.Screen.util.SpacerPanel;
+import server.ClientHandler;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
@@ -75,6 +78,7 @@ public class CreateRoomScreen extends JPanel {
         t_roomTitle.setFont(new Font("Dialog", Font.BOLD, 40));
         t_roomTitle.setForeground(new Color(245, 245, 220));
         t_roomTitle.setBorder(new EmptyBorder(3,10,0,0));
+        t_roomTitle.addMouseListener(new InputRoomEvent(t_roomTitle));
 
         titlePanel.add(t_roomTitle);
         flowTitlePanel.add(titlePanel);
@@ -85,11 +89,12 @@ public class CreateRoomScreen extends JPanel {
         JButton b_create = new JButton("생성하기");
         b_create.setFont(new Font("Dialog", Font.BOLD, 40));
         b_create.setBackground(Color.GREEN);
+        b_create.addActionListener(new CreateRoomEvent(t_roomTitle, window));
 
-        b_create.addActionListener(e -> {
-            window.setRoomTitle(t_roomTitle.getText());
-            window.showScreen("host");
-        });
+//        b_create.addActionListener(e -> {
+//            window.setRoomTitle(t_roomTitle.getText());
+//            window.showScreen("host");
+//        });
 
         flowCreatePanel.add(b_create);
 

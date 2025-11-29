@@ -16,7 +16,9 @@ public class PacketHandler {
 
     public void handle(Packet packet) {
 
-        if (packet instanceof CreateRoomRequestPacket p) {
+        if (packet instanceof LoginRequestPacket p) {
+            handleLogin(p);
+        } else if (packet instanceof CreateRoomRequestPacket p) {
             handleCreateRoom(p);
 
         } else if (packet instanceof JoinRoomRequestPacket p) {
@@ -28,6 +30,12 @@ public class PacketHandler {
         } else {
             window.printDisplay("알 수 없는 패킷: " + packet.getClass().getSimpleName());
         }
+    }
+
+    private void handleLogin(LoginRequestPacket packet) {
+        String nickname = client.getNickname();
+        int playerId = client.getPlayerId();
+        client.send(new LoginResponsePacket(nickname, playerId));
     }
 
     private void handleCreateRoom(CreateRoomRequestPacket packet) {

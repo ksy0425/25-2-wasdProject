@@ -2,7 +2,7 @@ package client.Screen;
 
 import client.network.ClientSender;
 import client.network.ConnectionManager;
-import shared.packet.LoginPacket;
+import shared.packet.LoginRequestPacket;
 
 import javax.swing.*;
 import java.awt.*;
@@ -57,7 +57,7 @@ public class LoginScreen extends JPanel {
             return;
         }
 
-        ClientSender.send(new LoginPacket(nickname));
+        ClientSender.send(new LoginRequestPacket(nickname));
 
         ConnectionManager.setNickname(nickname);
 

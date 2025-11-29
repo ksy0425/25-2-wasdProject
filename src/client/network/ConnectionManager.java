@@ -1,5 +1,6 @@
 package client.network;
 
+import client.ClientPacketHandler;
 import client.ClientReceiver;
 
 import java.io.ObjectInputStream;
@@ -26,7 +27,7 @@ public class ConnectionManager {
             out = new ObjectOutputStream(socket.getOutputStream());
             in = new ObjectInputStream(socket.getInputStream());
 
-            new ClientReceiver().start();
+            new ClientReceiver(new ClientPacketHandler()).start();
         } catch (Exception e) {
             e.printStackTrace();
         }

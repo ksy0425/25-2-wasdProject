@@ -1,6 +1,6 @@
 package server;
 
-import shared.packet.LoginPacket;
+import shared.packet.LoginRequestPacket;
 import shared.packet.Packet;
 
 import java.io.ObjectInputStream;
@@ -15,6 +15,7 @@ public class ClientHandler extends Thread {
 
     private ObjectInputStream in;
     private ObjectOutputStream out;
+    private String nickname;
     private int playerId;
 
     public ClientHandler(Socket socket, RoomManager roomManager, ServerWindow window) {
@@ -32,16 +33,17 @@ public class ClientHandler extends Thread {
             PacketHandler handler = new PacketHandler(this, roomManager, window);
 
             Packet first = (Packet) in.readObject();
-            if (!(first instanceof LoginPacket login)) {
+            if (!(first instanceof LoginRequestPacket login)) {
                 window.printDisplay("잘못된 최초 패킷 수신. 접속 종료.");
                 socket.close();
                 return;
             }
 
-            String nickname = login.getNickname();
+            nickname = login.getNickname();
             this.playerId = roomManager.addClient(this, nickname);
 
             window.printDisplay("플레이어 접속: ID=" + playerId + ", 닉네임=" + nickname);
+            handler.handle(first);
 
             while (true) {
                 Packet packet = (Packet) in.readObject();
@@ -60,6 +62,7 @@ public class ClientHandler extends Thread {
     public int getPlayerId() {
         return playerId;
     }
+    public String getNickname() { return nickname; }
 
     public void send(Packet packet) {
         try {
