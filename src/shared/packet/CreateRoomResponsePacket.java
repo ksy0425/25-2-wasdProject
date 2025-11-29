@@ -1,7 +1,5 @@
 package shared.packet;
 
-import server.packet.Packet;
-
 public class CreateRoomResponsePacket extends Packet {
     private boolean accepted;  // true=승인, false=거부
     private String reason;     // 거부 사유

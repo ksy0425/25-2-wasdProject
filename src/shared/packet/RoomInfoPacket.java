@@ -1,7 +1,5 @@
 package shared.packet;
 
-import server.packet.Packet;
-
 import java.util.List;
 
 public class RoomInfoPacket extends Packet {

@@ -1,7 +1,5 @@
 package shared.packet;
 
-import server.packet.Packet;
-
 public class JoinRoomResponsePacket extends Packet {
     private boolean accepted;
     private String reason;     // 인원 초과, 방 없음 등 사유
