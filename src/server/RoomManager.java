@@ -22,6 +22,10 @@ public class RoomManager {
         this.serverWindow = serverWindow;
     }
 
+    public boolean check(String nickname) {
+        return !playerNicknames.containsValue(nickname);
+    }
+
     public synchronized int addClient(ClientHandler handler, String nickname) {
         clients.add(handler);
 
@@ -33,6 +37,7 @@ public class RoomManager {
     }
 
     public synchronized void removeClient(ClientHandler handler) {
+        System.out.println("삭제 닉네임 : " + playerNicknames.get(handler.getPlayerId()));
         clients.remove(handler);
         playerNicknames.remove(handler.getPlayerId());
         serverWindow.printDisplay("[RoomManager] 클라이언트 제거: ID=" + handler.getPlayerId());

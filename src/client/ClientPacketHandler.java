@@ -1,6 +1,8 @@
 // src/client/ClientPacketHandler.java
 package client;
 
+import client.Screen.ClientWindow;
+import client.network.ConnectionManager;
 import shared.model.PlayerState;
 import shared.packet.*;
 
@@ -12,6 +14,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * 플레이어 신원 정보(PlayerState)만 관리하는 핸들러.
  */
 public class ClientPacketHandler {
+    private ClientWindow window;
 
     // 나 자신 정보
     private volatile PlayerState me;
@@ -19,7 +22,7 @@ public class ClientPacketHandler {
     // 현재 로비/방 등에 존재하는 플레이어들 정보 (나 포함)
     private final Map<Integer, PlayerState> players = new ConcurrentHashMap<>();
 
-    public ClientPacketHandler() {}
+    public ClientPacketHandler(ClientWindow window) { this.window = window; }
 
     // -------- 외부에서 조회용 --------
 
@@ -50,15 +53,23 @@ public class ClientPacketHandler {
     }
 
     private void handleLoginResponse(LoginResponsePacket packet) {
-        int playerId = packet.getPlayerId();
-        String nickname = packet.getNickname();
+        if(packet.isAccepted()) {
+            int playerId = packet.getPlayerId();
+            String nickname = packet.getNickname();
 
-        PlayerState myState = new PlayerState(nickname, playerId);
-        me = myState;
-        players.put(playerId, myState);
+            PlayerState myState = new PlayerState(nickname, playerId);
+            me = myState;
+            players.put(playerId, myState);
 
-        System.out.println("[CLIENT] 로그인 성공: " + myState);
-        // TODO: 로그인 화면 → 로비 화면 전환 등 UI 작업은 여기서 호출
+            ConnectionManager.setNickname(nickname);
+
+            System.out.println("[CLIENT] 로그인 성공: " + myState);
+
+            window.showScreen("main");
+        }
+        else {
+            window.alert(packet.getReason());
+        }
     }
 
     private void handleCreateRoomResponse(CreateRoomResponsePacket packet) {

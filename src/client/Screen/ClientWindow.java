@@ -1,5 +1,6 @@
 package client.Screen;
 
+import client.Screen.util.PopupPanel;
 import client.network.ConnectionManager;
 
 import javax.swing.*;
@@ -14,7 +15,7 @@ public class ClientWindow extends JFrame {
     public ClientWindow() {
         super("WASD: 부기의 모험");
 
-        ConnectionManager.connect("localhost", 54321);
+        ConnectionManager.connect("localhost", 54321, this);
 
         cardLayout = new CardLayout();
         container = new JPanel(cardLayout);
@@ -45,6 +46,13 @@ public class ClientWindow extends JFrame {
         cardLayout.show(container, name);
         container.revalidate();
         container.repaint();
+    }
+
+    public void alert(String message) {
+        PopupPanel popup = new PopupPanel(message);
+
+        container.add(popup, "popup");
+        cardLayout.show(container, "popup");
     }
 
     private JPanel createScreen(String name) {

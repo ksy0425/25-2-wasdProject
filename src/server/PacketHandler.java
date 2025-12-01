@@ -33,9 +33,19 @@ public class PacketHandler {
     }
 
     private void handleLogin(LoginRequestPacket packet) {
-        String nickname = client.getNickname();
-        int playerId = client.getPlayerId();
-        client.send(new LoginResponsePacket(nickname, playerId));
+        String nickname = packet.getNickname();
+        if(roomManager.check(nickname)) {
+            int playerId = roomManager.addClient(client, nickname);
+            client.setNickname(nickname);
+            client.setPlayerId(playerId);
+
+            window.printDisplay("플레이어 접속: ID=" + playerId + ", 닉네임=" + nickname);
+
+            client.send(new LoginResponsePacket(nickname, playerId, true, "Login Success"));
+        }
+        else {
+            client.send(new LoginResponsePacket(nickname, 0, false, nickname + " is already exist"));
+        }
     }
 
     private void handleCreateRoom(CreateRoomRequestPacket packet) {

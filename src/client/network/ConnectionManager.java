@@ -2,6 +2,7 @@ package client.network;
 
 import client.ClientPacketHandler;
 import client.ClientReceiver;
+import client.Screen.ClientWindow;
 
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
@@ -21,13 +22,13 @@ public class ConnectionManager {
         return nickname;
     }
 
-    public static void connect(String host, int port) {
+    public static void connect(String host, int port, ClientWindow window) {
         try {
             socket = new Socket(host, port);
             out = new ObjectOutputStream(socket.getOutputStream());
             in = new ObjectInputStream(socket.getInputStream());
 
-            new ClientReceiver(new ClientPacketHandler()).start();
+            new ClientReceiver(new ClientPacketHandler(window)).start();
         } catch (Exception e) {
             e.printStackTrace();
         }

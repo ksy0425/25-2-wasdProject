@@ -58,9 +58,5 @@ public class LoginScreen extends JPanel {
         }
 
         ClientSender.send(new LoginRequestPacket(nickname));
-
-        ConnectionManager.setNickname(nickname);
-
-        window.showScreen("main");
     }
 }

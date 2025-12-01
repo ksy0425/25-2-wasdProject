@@ -2,7 +2,6 @@ package client.Screen;
 
 import client.Screen.util.BackgroundPanel;
 import client.Screen.util.ImagePanel;
-import client.KeyEvent.StartEvent;
 import client.KeyEvent.ExitEvent;
 
 import javax.swing.*;
