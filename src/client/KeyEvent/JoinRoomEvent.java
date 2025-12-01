@@ -27,7 +27,5 @@ public class JoinRoomEvent implements ActionListener {
             return;
         }
         ClientSender.send(new JoinRoomRequestPacket(t_roomTitle.getText()));
-        window.setRoomTitle(t_roomTitle.getText());
-        window.showScreen("host");
     }
 }

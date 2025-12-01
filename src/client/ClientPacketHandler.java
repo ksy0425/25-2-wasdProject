@@ -48,8 +48,6 @@ public class ClientPacketHandler {
 
         } else if (packet instanceof RoomInfoPacket p) {
             handleRoomInfo(p);
-        } else if (packet instanceof PlayerLeftRoomPacket p) {
-            handlePlayerLeftRoom(p);
         } else {
             System.out.println("[CLIENT] 알 수 없는 패킷 수신: " + packet.getClass().getSimpleName());
         }
@@ -81,6 +79,7 @@ public class ClientPacketHandler {
 
         if (ok) {
             System.out.println("[CLIENT] 방 생성 성공");
+            window.setRoomTitle(packet.getRoomTitle());
             window.showScreen("host");
         } else {
             System.out.println("[CLIENT] 방 생성 실패: " + msg);
@@ -95,6 +94,8 @@ public class ClientPacketHandler {
         if (ok) {
             System.out.println("[CLIENT] 방 참가 성공");
             // TODO: 방 내부 화면 전환
+            window.setRoomTitle(packet.getRoomTitle());
+            window.showScreen("host");
         } else {
             System.out.println("[CLIENT] 방 참가 실패: " + msg);
         }
@@ -117,14 +118,6 @@ public class ClientPacketHandler {
                 window.refreshRoomView(); // 또는 window.getHostScreen().refreshParticipants();
             }
         });
-    }
-
-    private void handlePlayerLeftRoom(PlayerLeftRoomPacket packet) {
-        int playerId = packet.getPlayerId();
-        players.remove(playerId);
-
-        System.out.println("[CLIENT] 플레이어 퇴장: playerId=" + playerId);
-        // TODO: UI에서 해당 플레이어 제거 후 리렌더
     }
 
     public void onDisconnected() {

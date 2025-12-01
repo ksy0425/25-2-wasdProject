@@ -25,7 +25,5 @@ public class CreateRoomEvent implements ActionListener {
             return;
         }
         ClientSender.send(new CreateRoomRequestPacket(t_roomTitle.getText()));
-        window.setRoomTitle(t_roomTitle.getText());
-        window.showScreen("host");
     }
 }

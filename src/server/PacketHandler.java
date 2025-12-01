@@ -52,7 +52,7 @@ public class PacketHandler {
         boolean ok = roomManager.createRoom(packet.getRoomTitle(), client);
 
         client.send(new CreateRoomResponsePacket(
-                ok, ok ? "" : "이미 존재하는 방 제목입니다."
+                packet.getRoomTitle(), ok, ok ? "" : "이미 존재하는 방 제목입니다."
         ));
     }
 
@@ -60,7 +60,7 @@ public class PacketHandler {
         boolean ok = roomManager.joinRoom(packet.getRoomTitle(), client);
 
         client.send(new JoinRoomResponsePacket(
-                ok, ok ? "" : "인원 초과 또는 방 없음"
+                packet.getRoomTitle(), ok, ok ? "" : "인원 초과 또는 방 없음"
         ));
     }
 
