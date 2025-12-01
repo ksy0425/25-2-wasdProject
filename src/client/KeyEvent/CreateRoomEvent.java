@@ -19,13 +19,11 @@ public class CreateRoomEvent implements ActionListener {
     @Override
     public void actionPerformed(ActionEvent e) {
         String title = t_roomTitle.getText().trim();
-        if (title.isEmpty()) {
+        if (title.isEmpty() || title.equals("생성할 방 제목을 입력하세요.")) {
             JOptionPane.showMessageDialog(null, "방 이름을 입력해주세요.", "알림", JOptionPane.WARNING_MESSAGE);
             t_roomTitle.requestFocus(); // focus 다시 방 제목으로
             return;
         }
         ClientSender.send(new CreateRoomRequestPacket(t_roomTitle.getText()));
-        window.setRoomTitle(t_roomTitle.getText());
-        window.showScreen("host");
     }
 }

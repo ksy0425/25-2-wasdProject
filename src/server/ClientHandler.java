@@ -17,6 +17,7 @@ public class ClientHandler extends Thread {
     private ObjectOutputStream out;
     private String nickname;
     private int playerId;
+    private GameRoom currentRoom;
 
     public ClientHandler(Socket socket, RoomManager roomManager, ServerWindow window) {
         this.socket = socket;
@@ -57,10 +58,10 @@ public class ClientHandler extends Thread {
 
     public void setPlayerId(int playerId) { this.playerId = playerId; }
     public void setNickname(String nickname) { this.nickname = nickname; }
-    public int getPlayerId() {
-        return playerId;
-    }
+    public int getPlayerId() { return playerId; }
     public String getNickname() { return nickname; }
+    public synchronized GameRoom getCurrentRoom() { return currentRoom; }
+    public synchronized void setCurrentRoom(GameRoom room) { this.currentRoom = room; }
 
     public void send(Packet packet) {
         try {

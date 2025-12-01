@@ -6,6 +6,7 @@ import client.network.ConnectionManager;
 import shared.model.PlayerState;
 import shared.packet.*;
 
+import javax.swing.*;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -78,10 +79,10 @@ public class ClientPacketHandler {
 
         if (ok) {
             System.out.println("[CLIENT] 방 생성 성공");
-            // TODO: 방 내부 화면으로 전환 등
+            window.showScreen("host");
         } else {
             System.out.println("[CLIENT] 방 생성 실패: " + msg);
-            // TODO: 팝업 등으로 사용자에게 안내
+            JOptionPane.showMessageDialog(null, msg, "알림", JOptionPane.WARNING_MESSAGE);
         }
     }
 

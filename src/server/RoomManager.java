@@ -72,16 +72,18 @@ public class RoomManager {
     }
 
     public synchronized void leaveRoom(ClientHandler client) {
+        GameRoom room = client.getCurrentRoom();
 
-        for (GameRoom room : rooms.values()) {
-
-            if (room.getPlayerCount() > 0) {
-                room.leave(client);
+        if (room != null) {
+            room.leave(client);
+            if (room.getPlayerCount() == 0) {
+                rooms.remove(room.getRoomTitle());
             }
         }
 
         serverWindow.printDisplay("[RoomManager] 방 퇴장: ID=" + client.getPlayerId());
     }
+
 
     public GameRoom getRoom(String title) {
         return rooms.get(title);

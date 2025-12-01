@@ -24,12 +24,16 @@ public class GameRoom {
         if (players.size() >= MAX_PLAYER) return false;
 
         players.add(client);
+        client.setCurrentRoom(this);
+
         broadcastRoomInfo();
         return true;
     }
 
     public synchronized void leave(ClientHandler client) {
+        if (!players.contains(client)) return;
         players.remove(client);
+        client.setCurrentRoom(null);
         broadcastRoomInfo();
     }
 
