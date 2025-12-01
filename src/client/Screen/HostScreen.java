@@ -5,6 +5,8 @@ import client.Screen.util.BackgroundPanel;
 import client.Screen.util.RoomPanel;
 import client.Screen.util.RoundedPanel;
 import client.Screen.util.SpacerPanel;
+import client.network.ConnectionManager;
+import shared.model.PlayerState;
 
 import javax.swing.*;
 import java.awt.*;
@@ -14,11 +16,11 @@ public class HostScreen extends JPanel {
     private ClientWindow window;
     private JButton b_back;
     private String title;
+    private RoomPanel roomPanel;
 
     public HostScreen(ClientWindow window) {
         this.window = window;
         this.title = window.getRoomTitle();
-        System.out.println("title : " + title);
 
         setLayout(new BorderLayout());
         setOpaque(false);
@@ -106,11 +108,27 @@ public class HostScreen extends JPanel {
     }
 
     private JPanel createRoomPanel() {
-        RoomPanel roomPanel = new RoomPanel();
+        roomPanel = new RoomPanel();
         roomPanel.setOpaque(false);
-        roomPanel.addParticipant("Player1");
-        roomPanel.addParticipant("Player2");
+        //roomPanel.addParticipant("Player1");
+        //roomPanel.addParticipant("Player2");
+        refreshParticipants();
 
         return roomPanel;
+    }
+
+    public void refreshParticipants() {
+        if (roomPanel == null) {
+            return;
+        }
+
+        var handler = ConnectionManager.getHandler();
+        if (handler == null) return;
+
+        roomPanel.clearParticipants();
+
+        for (PlayerState ps : handler.getPlayers().values()) {
+            roomPanel.addParticipant(ps.getNickname());
+        }
     }
 }

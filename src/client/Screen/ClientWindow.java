@@ -11,9 +11,12 @@ public class ClientWindow extends JFrame {
     private CardLayout cardLayout;
     private JPanel container;
     private String roomTitle;
+    private HostScreen hostScreen;
 
     public ClientWindow() {
         super("WASD: 부기의 모험");
+
+        ConnectionManager.setWindow(this);
 
         ConnectionManager.connect("localhost", 54321, this);
 
@@ -62,7 +65,8 @@ public class ClientWindow extends JFrame {
             case "main":
                 return new MainScreen(this);
             case "host":
-                return new HostScreen(this);
+                hostScreen = new HostScreen(this);
+                return hostScreen;
             case "create":
                 return new CreateRoomScreen(this);
             case "participation":
@@ -71,6 +75,13 @@ public class ClientWindow extends JFrame {
                 return new JoinRoomScreen(this);
             default:
                 throw new IllegalArgumentException("Unknown screen: " + name);
+        }
+    }
+
+    // 추가: 방 참가자 목록을 다시 그리도록 HostScreen에 요청하는 헬퍼
+    public void refreshRoomView() {
+        if (hostScreen != null) {
+            hostScreen.refreshParticipants();
         }
     }
 }

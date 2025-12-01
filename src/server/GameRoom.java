@@ -1,8 +1,10 @@
 package server;
 
+import shared.model.PlayerState;
 import shared.packet.Packet;
 import shared.packet.RoomInfoPacket;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Vector;
 
@@ -44,14 +46,17 @@ public class GameRoom {
     }
 
     public synchronized void broadcastRoomInfo() {
-        List<Integer> ids = players.stream()
-                .map(ClientHandler::getPlayerId)
-                .toList();
+        List<PlayerState> states = new ArrayList<>();
+
+        for (ClientHandler c : players) {
+            PlayerState ps = new PlayerState(c.getNickname(), c.getPlayerId());
+            states.add(ps);
+        }
 
         RoomInfoPacket info = new RoomInfoPacket(
                 roomTitle,
                 host.getPlayerId(),
-                ids
+                states
         );
 
         broadcast(info);
@@ -64,4 +69,7 @@ public class GameRoom {
     public int getPlayerCount() {
         return players.size();
     }
+
+    public boolean isHost(ClientHandler client) { return client.equals(host); }
+    public Vector<ClientHandler> getPlayers() { return new Vector<>(players); }
 }

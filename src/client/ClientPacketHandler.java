@@ -46,6 +46,8 @@ public class ClientPacketHandler {
         } else if (packet instanceof JoinRoomResponsePacket p) {
             handleJoinRoomResponse(p);
 
+        } else if (packet instanceof RoomInfoPacket p) {
+            handleRoomInfo(p);
         } else if (packet instanceof PlayerLeftRoomPacket p) {
             handlePlayerLeftRoom(p);
         } else {
@@ -96,6 +98,25 @@ public class ClientPacketHandler {
         } else {
             System.out.println("[CLIENT] 방 참가 실패: " + msg);
         }
+    }
+
+    private void handleRoomInfo(RoomInfoPacket packet) {
+        players.clear();
+        for (PlayerState ps : packet.getPlayers()) {
+            players.put(ps.getPlayerId(), ps);
+        }
+
+        System.out.println("[CLIENT] 방 정보 갱신: "
+                + packet.getRoomTitle() + " / 인원 = " + players.size());
+
+        // UI는 EDT에서 갱신
+        SwingUtilities.invokeLater(() -> {
+            // 아래에서 설명할 HostScreen.refreshParticipants() 호출
+            client.Screen.ClientWindow window = ConnectionManager.getWindow(); // static으로 하나 보관
+            if (window != null) {
+                window.refreshRoomView(); // 또는 window.getHostScreen().refreshParticipants();
+            }
+        });
     }
 
     private void handlePlayerLeftRoom(PlayerLeftRoomPacket packet) {
