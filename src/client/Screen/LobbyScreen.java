@@ -11,14 +11,15 @@ import shared.model.PlayerState;
 import javax.swing.*;
 import java.awt.*;
 
-public class HostScreen extends JPanel {
+public class LobbyScreen extends JPanel {
 
     private ClientWindow window;
     private JButton b_back;
     private String title;
+    private int hostId;
     private RoomPanel roomPanel;
 
-    public HostScreen(ClientWindow window) {
+    public LobbyScreen(ClientWindow window) {
         this.window = window;
         this.title = window.getRoomTitle();
 
@@ -110,8 +111,7 @@ public class HostScreen extends JPanel {
     private JPanel createRoomPanel() {
         roomPanel = new RoomPanel();
         roomPanel.setOpaque(false);
-        //roomPanel.addParticipant("Player1");
-        //roomPanel.addParticipant("Player2");
+
         refreshParticipants();
 
         return roomPanel;
@@ -130,5 +130,8 @@ public class HostScreen extends JPanel {
         for (PlayerState ps : handler.getPlayers().values()) {
             roomPanel.addParticipant(ps.getNickname());
         }
+    }
+    public boolean isHost() {
+        return true;
     }
 }

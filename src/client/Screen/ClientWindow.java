@@ -11,7 +11,7 @@ public class ClientWindow extends JFrame {
     private CardLayout cardLayout;
     private JPanel container;
     private String roomTitle;
-    private HostScreen hostScreen;
+    private LobbyScreen lobbyScreen;
 
     public ClientWindow() {
         super("WASD: 부기의 모험");
@@ -64,13 +64,11 @@ public class ClientWindow extends JFrame {
                 return new LoginScreen(this);
             case "main":
                 return new MainScreen(this);
-            case "host":
-                hostScreen = new HostScreen(this);
-                return hostScreen;
+            case "lobby":
+                lobbyScreen = new LobbyScreen(this);
+                return lobbyScreen;
             case "create":
                 return new CreateRoomScreen(this);
-            case "participation":
-                return new ParticipationScreen(this);
             case "join":
                 return new JoinRoomScreen(this);
             default:
@@ -80,8 +78,8 @@ public class ClientWindow extends JFrame {
 
     // 추가: 방 참가자 목록을 다시 그리도록 HostScreen에 요청하는 헬퍼
     public void refreshRoomView() {
-        if (hostScreen != null) {
-            hostScreen.refreshParticipants();
+        if (lobbyScreen != null) {
+            lobbyScreen.refreshParticipants();
         }
     }
 }

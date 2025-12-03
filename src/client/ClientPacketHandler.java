@@ -80,7 +80,7 @@ public class ClientPacketHandler {
         if (ok) {
             System.out.println("[CLIENT] 방 생성 성공");
             window.setRoomTitle(packet.getRoomTitle());
-            window.showScreen("host");
+            window.showScreen("lobby");
         } else {
             System.out.println("[CLIENT] 방 생성 실패: " + msg);
             JOptionPane.showMessageDialog(null, msg, "알림", JOptionPane.WARNING_MESSAGE);
@@ -95,7 +95,7 @@ public class ClientPacketHandler {
             System.out.println("[CLIENT] 방 참가 성공");
             // TODO: 방 내부 화면 전환
             window.setRoomTitle(packet.getRoomTitle());
-            window.showScreen("host");
+            window.showScreen("lobby");
         } else {
             System.out.println("[CLIENT] 방 참가 실패: " + msg);
         }
@@ -110,14 +110,7 @@ public class ClientPacketHandler {
         System.out.println("[CLIENT] 방 정보 갱신: "
                 + packet.getRoomTitle() + " / 인원 = " + players.size());
 
-        // UI는 EDT에서 갱신
-        SwingUtilities.invokeLater(() -> {
-            // 아래에서 설명할 HostScreen.refreshParticipants() 호출
-            client.Screen.ClientWindow window = ConnectionManager.getWindow(); // static으로 하나 보관
-            if (window != null) {
-                window.refreshRoomView(); // 또는 window.getHostScreen().refreshParticipants();
-            }
-        });
+        window.showScreen("lobby");
     }
 
     public void onDisconnected() {
