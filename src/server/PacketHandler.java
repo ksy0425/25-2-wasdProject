@@ -49,18 +49,20 @@ public class PacketHandler {
     }
 
     private void handleCreateRoom(CreateRoomRequestPacket packet) {
-        boolean ok = roomManager.createRoom(packet.getRoomTitle(), client);
+        String title = packet.getRoomTitle();
+        boolean ok = roomManager.createRoom(title, client);
 
         client.send(new CreateRoomResponsePacket(
-                packet.getRoomTitle(), ok, ok ? "" : "이미 존재하는 방 제목입니다."
+                packet.getRoomTitle(), roomManager.getRoom(title).getHostId(), ok, ok ? "" : "이미 존재하는 방 제목입니다."
         ));
     }
 
     private void handleJoinRoom(JoinRoomRequestPacket packet) {
-        boolean ok = roomManager.joinRoom(packet.getRoomTitle(), client);
+        String title = packet.getRoomTitle();
+        boolean ok = roomManager.joinRoom(title, client);
 
         client.send(new JoinRoomResponsePacket(
-                packet.getRoomTitle(), ok, ok ? "" : "인원 초과 또는 방 없음"
+                packet.getRoomTitle(), roomManager.getRoom(title).getHostId(), ok, ok ? "" : "인원 초과 또는 방 없음"
         ));
     }
 

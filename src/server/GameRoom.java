@@ -69,7 +69,7 @@ public class GameRoom {
     public int getPlayerCount() {
         return players.size();
     }
-
+    public int getHostId() { return host.getPlayerId(); }
     public boolean isHost(ClientHandler client) { return client.equals(host); }
     public Vector<ClientHandler> getPlayers() { return new Vector<>(players); }
 }
