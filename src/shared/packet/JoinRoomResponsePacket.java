@@ -8,6 +8,7 @@ public class JoinRoomResponsePacket extends Packet {
 
     public JoinRoomResponsePacket(String roomTitle, int hostId, boolean accepted, String reason) {
         this.roomTitle = roomTitle;
+        this.hostId = hostId;
         this.accepted = accepted;
         this.reason = reason;
     }

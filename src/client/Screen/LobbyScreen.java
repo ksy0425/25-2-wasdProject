@@ -16,13 +16,13 @@ public class LobbyScreen extends JPanel {
     private ClientWindow window;
     private JButton b_back;
     private String title;
-    private boolean isHost;
+    private int hostId;
     private RoomPanel roomPanel;
 
     public LobbyScreen(ClientWindow window) {
         this.window = window;
         this.title = window.getRoomTitle();
-        this.isHost = window.getIsHost();
+        this.hostId = window.getHostId();
 
         setLayout(new BorderLayout());
         setOpaque(false);
@@ -97,7 +97,7 @@ public class LobbyScreen extends JPanel {
         JPanel rightPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
         rightPanel.setOpaque(false);
         JButton startButton = new JButton();
-        startButton.setText(isHost ? "시작하기" : "준비하기");
+        startButton.setText(isHost() ? "시작하기" : "준비하기");
         startButton.setFont(new Font("Dialog", Font.BOLD, 40));
         startButton.setBackground(Color.GREEN);
         rightPanel.add(startButton);
@@ -134,6 +134,6 @@ public class LobbyScreen extends JPanel {
         }
     }
     public boolean isHost() {
-        return true;
+        return ConnectionManager.getHandler().getMe().getPlayerId() == hostId;
     }
 }

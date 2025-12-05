@@ -2,6 +2,7 @@
 package client;
 
 import client.Screen.ClientWindow;
+import client.network.ClientSender;
 import client.network.ConnectionManager;
 import shared.model.PlayerState;
 import shared.packet.*;
@@ -76,10 +77,11 @@ public class ClientPacketHandler {
     private void handleCreateRoomResponse(CreateRoomResponsePacket packet) {
         boolean ok = packet.isAccepted();
         String msg = packet.getReason();
+        int hostId = packet.getHostId();
 
         if (ok) {
             System.out.println("[CLIENT] 방 생성 성공");
-            window.setIsHost(true);
+            window.setHostId(hostId);
             window.setRoomTitle(packet.getRoomTitle());
             window.showScreen("lobby");
         } else {
@@ -91,10 +93,11 @@ public class ClientPacketHandler {
     private void handleJoinRoomResponse(JoinRoomResponsePacket packet) {
         boolean ok = packet.isAccepted();
         String msg = packet.getReason();
+        int hostId = packet.getHostId();
 
         if (ok) {
             System.out.println("[CLIENT] 방 참가 성공");
-            window.setIsHost(false);
+            window.setHostId(hostId);
             window.setRoomTitle(packet.getRoomTitle());
             window.showScreen("lobby");
         } else {
@@ -104,14 +107,23 @@ public class ClientPacketHandler {
 
     private void handleRoomInfo(RoomInfoPacket packet) {
         players.clear();
+        boolean isBoom;
         for (PlayerState ps : packet.getPlayers()) {
             players.put(ps.getPlayerId(), ps);
         }
+        isBoom = !(packet.getPlayers().contains(window.getHostId()));
+
 
         System.out.println("[CLIENT] 방 정보 갱신: "
                 + packet.getRoomTitle() + " / 인원 = " + players.size());
 
-        window.showScreen("lobby");
+        if (isBoom) {
+            ClientSender.send(new LeaveRoomPacket());
+            window.showScreen("main");
+        }
+        else {
+            window.showScreen("lobby");
+        }
     }
 
     public void onDisconnected() {
