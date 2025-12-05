@@ -129,6 +129,7 @@ public class ClientPacketHandler {
             window.setHostId(-1);
             ClientSender.send(new LeaveRoomPacket());
             window.showScreen("main");
+            JOptionPane.showMessageDialog(window,"호스트가 방을 나갔습니다.","알림",JOptionPane.INFORMATION_MESSAGE);
         }
         else {
             window.showScreen("lobby");

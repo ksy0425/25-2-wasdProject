@@ -97,7 +97,14 @@ public class LobbyScreen extends JPanel {
         JPanel rightPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
         rightPanel.setOpaque(false);
         JButton startButton = new JButton();
-        startButton.setText(isHost() ? "시작하기" : "준비하기");
+        if(isHost()) {
+            startButton.setVisible(true);
+            startButton.setText("시작하기");
+        }
+        else {
+            startButton.setVisible(false);
+        }
+//        startButton.setText(isHost() ? "시작하기" : "준비하기");
         startButton.setFont(new Font("Dialog", Font.BOLD, 40));
         startButton.setBackground(Color.GREEN);
         rightPanel.add(startButton);
