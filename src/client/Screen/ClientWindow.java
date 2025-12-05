@@ -11,6 +11,7 @@ public class ClientWindow extends JFrame {
     private CardLayout cardLayout;
     private JPanel container;
     private String roomTitle;
+    private boolean isHost;
     private LobbyScreen lobbyScreen;
 
     public ClientWindow() {
@@ -82,4 +83,7 @@ public class ClientWindow extends JFrame {
             lobbyScreen.refreshParticipants();
         }
     }
+
+    public boolean getIsHost() { return isHost; }
+    public void setIsHost(boolean flag) { this.isHost = flag; }
 }

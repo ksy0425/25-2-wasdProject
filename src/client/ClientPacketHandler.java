@@ -79,6 +79,7 @@ public class ClientPacketHandler {
 
         if (ok) {
             System.out.println("[CLIENT] 방 생성 성공");
+            window.setIsHost(true);
             window.setRoomTitle(packet.getRoomTitle());
             window.showScreen("lobby");
         } else {
@@ -93,7 +94,7 @@ public class ClientPacketHandler {
 
         if (ok) {
             System.out.println("[CLIENT] 방 참가 성공");
-            // TODO: 방 내부 화면 전환
+            window.setIsHost(false);
             window.setRoomTitle(packet.getRoomTitle());
             window.showScreen("lobby");
         } else {
