@@ -1,5 +1,6 @@
 package client.Screen;
 
+import client.KeyEvent.GamestartEvent;
 import client.KeyEvent.LeaveRoomEvent;
 import client.Screen.util.BackgroundPanel;
 import client.Screen.util.RoomPanel;
@@ -100,6 +101,7 @@ public class LobbyScreen extends JPanel {
         if(isHost()) {
             startButton.setVisible(true);
             startButton.setText("시작하기");
+            startButton.addActionListener(new GamestartEvent());
         }
         else {
             startButton.setVisible(false);
