@@ -106,6 +106,8 @@ public class ClientPacketHandler {
     }
 
     private void handleRoomInfo(RoomInfoPacket packet) {
+        if (window.getHostId() == -1) return;
+
         players.clear();
         boolean isBoom;
         for (PlayerState ps : packet.getPlayers()) {
@@ -118,6 +120,7 @@ public class ClientPacketHandler {
                 + packet.getRoomTitle() + " / 인원 = " + players.size());
 
         if (isBoom) {
+            window.setHostId(-1);
             ClientSender.send(new LeaveRoomPacket());
             window.showScreen("main");
         }
