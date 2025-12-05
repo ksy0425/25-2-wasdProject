@@ -64,6 +64,8 @@ public class PacketHandler {
         client.send(new JoinRoomResponsePacket(
                 packet.getRoomTitle(), roomManager.getRoom(title).getHostId(), ok, ok ? "" : "인원 초과 또는 방 없음"
         ));
+
+        roomManager.getRoom(title).broadcastRoomInfo();
     }
 
     private void handleLeaveRoom(LeaveRoomPacket packet) {

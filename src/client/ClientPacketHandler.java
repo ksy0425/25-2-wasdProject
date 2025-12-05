@@ -82,6 +82,7 @@ public class ClientPacketHandler {
         if (ok) {
             System.out.println("[CLIENT] 방 생성 성공");
             window.setHostId(hostId);
+            System.out.println("hostId : " + hostId);
             window.setRoomTitle(packet.getRoomTitle());
             window.showScreen("lobby");
         } else {
@@ -106,14 +107,19 @@ public class ClientPacketHandler {
     }
 
     private void handleRoomInfo(RoomInfoPacket packet) {
-        if (window.getHostId() == -1) return;
+        int hostId = window.getHostId();
+        System.out.println("window.getHostId() : " + hostId);
+        if (hostId == -1) return;
 
         players.clear();
-        boolean isBoom;
+        boolean isBoom = true;
         for (PlayerState ps : packet.getPlayers()) {
+            if(ps.getPlayerId() == hostId) {
+                isBoom = false;
+            }
             players.put(ps.getPlayerId(), ps);
         }
-        isBoom = !(packet.getPlayers().contains(window.getHostId()));
+        System.out.println("isBoom : " + isBoom);
 
 
         System.out.println("[CLIENT] 방 정보 갱신: "

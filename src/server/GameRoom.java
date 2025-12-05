@@ -20,6 +20,7 @@ public class GameRoom {
         this.roomTitle = roomTitle;
         this.host = host;
         players.add(host);
+        host.setCurrentRoom(this);
     }
 
     public synchronized boolean join(ClientHandler client) {
@@ -28,7 +29,7 @@ public class GameRoom {
         players.add(client);
         client.setCurrentRoom(this);
 
-        broadcastRoomInfo();
+//        broadcastRoomInfo();
         return true;
     }
 

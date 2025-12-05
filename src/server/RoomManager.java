@@ -97,8 +97,6 @@ public class RoomManager {
         }
 
         rooms.remove(roomTitle);
-
-        serverWindow.printDisplay("[RoomManager] 방 삭제: " + roomTitle);
     }
 
 
