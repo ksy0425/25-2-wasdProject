@@ -84,6 +84,8 @@ public class ClientWindow extends JFrame {
         }
     }
 
+    public LobbyScreen getLobbyScreen() { return lobbyScreen; }
+
     public int  getHostId() { return hostId; }
     public void setHostId(int hostId) { this.hostId = hostId; }
 }

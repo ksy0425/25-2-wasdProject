@@ -145,9 +145,11 @@ public class LobbyScreen extends JPanel {
         roomPanel.clearParticipants();
 
         for (PlayerState ps : handler.getPlayers().values()) {
-            roomPanel.addParticipant(ps.getNickname());
+            roomPanel.addParticipant(ps.getNickname(), ps.getKeyRole());
         }
     }
+    public RoomPanel getRoomPanel() { return roomPanel; }
+
     public boolean isHost() {
         return handler.getMe().getPlayerId() == hostId;
     }

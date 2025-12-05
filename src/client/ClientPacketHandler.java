@@ -2,6 +2,7 @@
 package client;
 
 import client.Screen.ClientWindow;
+import client.Screen.util.RoomPanel;
 import client.network.ClientSender;
 import client.network.ConnectionManager;
 import shared.model.PlayerState;
@@ -139,7 +140,21 @@ public class ClientPacketHandler {
     }
 
     public void handleGameStart(GameStartResponsePacket p) {
+        RoomPanel roomPanel = window.getLobbyScreen().getRoomPanel();
+        Map<Integer, String> playersKey = p.getPlayersKey();
 
+        for (Map.Entry<Integer, String> entry : playersKey.entrySet()) {
+            Integer playerId = entry.getKey();   // 서버에서 내려준 playerId
+            System.out.println("====" + entry.getKey() + "====");
+            String keyRole = entry.getValue();   // ex) "W", "A", "S", "D"
+            System.out.println("====" + entry.getValue() + "====");
+
+            PlayerState ps = players.get(playerId);  // ClientPacketHandler의 players 맵에서 찾기
+            if (ps != null) {
+                ps.setKeyRole(keyRole);          // 키 역할 세팅
+            }
+        }
+        window.showScreen("lobby");
     }
 
     public void onDisconnected() {

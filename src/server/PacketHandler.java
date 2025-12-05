@@ -1,6 +1,9 @@
 package server;
 
+import shared.model.PlayerState;
 import shared.packet.*;
+
+import java.util.*;
 
 public class PacketHandler {
 
@@ -27,6 +30,8 @@ public class PacketHandler {
         } else if (packet instanceof LeaveRoomPacket p) {
             handleLeaveRoom(p);
 
+        } else if (packet instanceof  GameStartRequestPacket p) {
+            handleGameStart(p);
         } else {
             window.printDisplay("알 수 없는 패킷: " + packet.getClass().getSimpleName());
         }
@@ -72,5 +77,29 @@ public class PacketHandler {
         roomManager.leaveRoom(client);
 
         roomManager.broadcastLobby(new PlayerLeftRoomPacket(client.getPlayerId()));
+    }
+
+    private void handleGameStart(GameStartRequestPacket packet) {
+        List<PlayerState> players = packet.getPlayerStateList();
+
+        List<String> keys = new ArrayList<>();
+        keys.add("w");
+        keys.add("a");
+        keys.add("s");
+        keys.add("d");
+
+        Collections.shuffle(keys);
+
+        Map<Integer, String> playersKey = new HashMap<>();
+
+        for (int i = 0; i < players.size() && i < keys.size(); i++) {
+            PlayerState ps = players.get(i);
+            int playerId = ps.getPlayerId();
+            String key = keys.get(i);
+
+            playersKey.put(playerId, key);
+        }
+
+        client.send(new GameStartResponsePacket(playersKey));
     }
 }
