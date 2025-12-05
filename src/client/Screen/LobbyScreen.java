@@ -1,5 +1,6 @@
 package client.Screen;
 
+import client.ClientPacketHandler;
 import client.KeyEvent.GamestartEvent;
 import client.KeyEvent.LeaveRoomEvent;
 import client.Screen.util.BackgroundPanel;
@@ -18,12 +19,14 @@ public class LobbyScreen extends JPanel {
     private JButton b_back;
     private String title;
     private int hostId;
+    private ClientPacketHandler handler;
     private RoomPanel roomPanel;
 
     public LobbyScreen(ClientWindow window) {
         this.window = window;
         this.title = window.getRoomTitle();
         this.hostId = window.getHostId();
+        this.handler = ConnectionManager.getHandler();
 
         setLayout(new BorderLayout());
         setOpaque(false);
@@ -101,7 +104,11 @@ public class LobbyScreen extends JPanel {
         if(isHost()) {
             startButton.setVisible(true);
             startButton.setText("시작하기");
-            startButton.addActionListener(new GamestartEvent());
+            if (handler != null) {
+                startButton.addActionListener(
+                        new GamestartEvent(handler.getPlayers().values())
+                );
+            }
         }
         else {
             startButton.setVisible(false);
@@ -133,7 +140,6 @@ public class LobbyScreen extends JPanel {
             return;
         }
 
-        var handler = ConnectionManager.getHandler();
         if (handler == null) return;
 
         roomPanel.clearParticipants();
@@ -143,6 +149,6 @@ public class LobbyScreen extends JPanel {
         }
     }
     public boolean isHost() {
-        return ConnectionManager.getHandler().getMe().getPlayerId() == hostId;
+        return handler.getMe().getPlayerId() == hostId;
     }
 }

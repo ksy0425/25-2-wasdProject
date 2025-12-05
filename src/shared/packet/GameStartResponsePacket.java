@@ -2,7 +2,7 @@ package shared.packet;
 
 import java.util.Map;
 
-public class GameStartResponsePacket {
+public class GameStartResponsePacket extends Packet{
     private Map<Integer, String> playersKey;
     public GameStartResponsePacket(Map<Integer, String> playersKey) {
         this.playersKey = playersKey;

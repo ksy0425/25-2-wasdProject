@@ -1,5 +1,15 @@
 package shared.packet;
 
+import shared.model.PlayerState;
+
+import java.util.List;
+
 public class GameStartRequestPacket extends Packet{
-    // 담을게 없네요
+    private List<PlayerState> playerStateList;
+    public GameStartRequestPacket(List<PlayerState> playerStateList) {
+        this.playerStateList = playerStateList;
+    }
+    public List<PlayerState> getPlayerStateList() {
+        return playerStateList;
+    }
 }

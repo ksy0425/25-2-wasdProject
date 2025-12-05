@@ -49,6 +49,8 @@ public class ClientPacketHandler {
 
         } else if (packet instanceof RoomInfoPacket p) {
             handleRoomInfo(p);
+        } else if (packet instanceof GameStartResponsePacket p) {
+            handleGameStart(p);
         } else {
             System.out.println("[CLIENT] 알 수 없는 패킷 수신: " + packet.getClass().getSimpleName());
         }
@@ -134,6 +136,10 @@ public class ClientPacketHandler {
         else {
             window.showScreen("lobby");
         }
+    }
+
+    public void handleGameStart(GameStartResponsePacket p) {
+
     }
 
     public void onDisconnected() {
