@@ -106,7 +106,7 @@ public class LobbyScreen extends JPanel {
             startButton.setText("시작하기");
             if (handler != null) {
                 startButton.addActionListener(
-                        new GamestartEvent(handler.getPlayers().values())
+                        new GamestartEvent(title, handler.getPlayers().values())
                 );
             }
         }

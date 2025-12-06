@@ -99,7 +99,6 @@ public class PacketHandler {
 
             playersKey.put(playerId, key);
         }
-
-        client.send(new GameStartResponsePacket(playersKey));
+        roomManager.getRoom(packet.getTitle()).broadcast(new GameStartResponsePacket(playersKey));
     }
 }

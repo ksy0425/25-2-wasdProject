@@ -66,21 +66,6 @@ public class RoomPanel extends JPanel {
     }
 
     private JPanel createParticipantCard(String name, String role) {
-//        JPanel card = new JPanel();
-//        card.setOpaque(false);
-//        card.setLayout(new BorderLayout());
-//
-//        RoundedPanel box = new RoundedPanel(20);
-//        box.setBackground(new Color(255, 255, 255, 180)); // 반투명 흰 박스
-//        box.setLayout(new FlowLayout(FlowLayout.CENTER, 10, 10));
-//
-//        JLabel label = new JLabel(name);
-//        label.setFont(new Font("Dialog", Font.BOLD, 18));
-//        box.add(label);
-//
-//        card.add(box, BorderLayout.CENTER);
-//        return card;
-
         JPanel card = new JPanel();
         card.setOpaque(false);
         card.setLayout(new BorderLayout());
@@ -102,14 +87,23 @@ public class RoomPanel extends JPanel {
         JPanel squarePanelWrapper = new JPanel(new FlowLayout(FlowLayout.CENTER, 0, 5));
         squarePanelWrapper.setOpaque(false);
 
-        JPanel squarePanel = new JPanel();
         int size = 100; // 정사각형 한 변 길이
+
+        // 이미지를 가운데에 한 장 넣기 위해 BorderLayout 사용
+        JPanel squarePanel = new JPanel(new BorderLayout());
         squarePanel.setPreferredSize(new Dimension(size, size));
         squarePanel.setBackground(new Color(220, 220, 220)); // 기본 색
-        squarePanelWrapper.add(squarePanel);
 
-        JLabel roleLabel = new JLabel(role);
-        squarePanel.add(roleLabel);
+        // role -> 이미지 경로 매핑
+        String imgPath = getRoleImagePath(role);
+        if (imgPath != null) {
+            // ImagePanel이 (String path, int width, int height) 생성자를 가진다고 가정
+            ImagePanel roleImagePanel = new ImagePanel(imgPath, size, size);
+            squarePanel.add(roleImagePanel, BorderLayout.CENTER);
+        }
+        // role이 없거나 매핑 안 되면 기본 회색 박스만 보이게 둠
+
+        squarePanelWrapper.add(squarePanel);
 
         // 박스에 위/아래로 배치
         box.add(namePanel, BorderLayout.NORTH);
@@ -117,6 +111,23 @@ public class RoomPanel extends JPanel {
 
         card.add(box, BorderLayout.CENTER);
         return card;
+    }
+
+    private String getRoleImagePath(String role) {
+        if (role == null) return null;
+
+        switch (role.toLowerCase()) {
+            case "w":
+                return "/W.png";
+            case "a":
+                return "/A.png";
+            case "s":
+                return "/S.png";
+            case "d":
+                return "/D.png";
+            default:
+                return null; // 매칭 안 되면 이미지 없음
+        }
     }
 
 //    public void setRole(String role) {

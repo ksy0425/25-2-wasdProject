@@ -13,13 +13,15 @@ import java.util.Collection;
 import java.util.List;
 
 public class GamestartEvent implements ActionListener {
+    private String title;
     private List<PlayerState> playerStateList;
-    public GamestartEvent(Collection<PlayerState> players) {
+    public GamestartEvent(String title, Collection<PlayerState> players) {
+        this.title = title;
         playerStateList = new ArrayList<>(players) ;
     }
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        ClientSender.send(new GameStartRequestPacket(playerStateList));
+        ClientSender.send(new GameStartRequestPacket(title, playerStateList));
     }
 }
