@@ -5,6 +5,10 @@ import client.network.ConnectionManager;
 
 import javax.swing.*;
 import java.awt.*;
+import java.io.BufferedReader;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
 
 public class ClientWindow extends JFrame {
 
@@ -13,13 +17,33 @@ public class ClientWindow extends JFrame {
     private String roomTitle;
     private int hostId;
     private LobbyScreen lobbyScreen;
+    private String serverAddress;
+    private int serverPort;
 
     public ClientWindow() {
         super("WASD: 부기의 모험");
 
         ConnectionManager.setWindow(this);
-
-        ConnectionManager.connect("localhost", 54321, this);
+        FileReader fr = null;
+        BufferedReader br = null;
+        try {
+            fr = new FileReader("src/resources/server.txt");
+            br = new BufferedReader(fr);
+            serverAddress = br.readLine();
+            serverPort = Integer.parseInt(br.readLine());
+        } catch (FileNotFoundException e) {
+            throw new RuntimeException(e);
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                if (br != null) br.close();
+                if (fr != null) fr.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        ConnectionManager.connect(serverAddress, serverPort, this);
 
         cardLayout = new CardLayout();
         container = new JPanel(cardLayout);
