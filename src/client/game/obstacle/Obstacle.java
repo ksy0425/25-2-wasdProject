@@ -1,8 +1,8 @@
-package client.game.obstartcle;
+package client.game.obstacle;
 
 import java.awt.*;
 
-public class Obstarcle {
+public class Obstacle {
     public static final int UNIT_SIZE=40;
     private static final int MOVE_DISTANCE = 1;
     private Color color;
@@ -11,7 +11,7 @@ public class Obstarcle {
     public static final int xDistance = 1, yDistance = 2;
     private int xDirection, yDirection;
 
-    public Obstarcle (Color color, int x, int y) {
+    public Obstacle(Color color, int x, int y) {
         this.color = color;
         this.x = x;
         this.y = y;

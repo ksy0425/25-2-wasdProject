@@ -1,6 +1,6 @@
 package client.game;
 
-import client.game.obstartcle.Obstarcle;
+import client.game.obstacle.Obstacle;
 import client.game.player.Unit;
 import client.network.ClientSender;
 import client.network.ConnectionManager;
@@ -18,7 +18,7 @@ public class GamePrototype extends JComponent {
     private static GamePrototype instance;
 
     private final Unit unit;
-    private Obstarcle obstarcleX, obstarcleY;
+    private Obstacle obstacleX, obstacleY;
     private final int myPlayerId;
     private final String keyRole; // "w", "a", "s", "d"
 
@@ -40,8 +40,8 @@ public class GamePrototype extends JComponent {
         // 유닛 초기 위치 (적당히 조정 가능)
         unit = new Unit(Color.RED, 200, 200);
         //장애물 생성
-        obstarcleX = new Obstarcle(Color.BLACK, 100, 400);
-        obstarcleY = new Obstarcle(Color.BLACK, 600, 100);
+        obstacleX = new Obstacle(Color.BLACK, 100, 400);
+        obstacleY = new Obstacle(Color.BLACK, 600, 100);
         //obstarcle.startMoving(1);
 
         setFocusable(true);
@@ -127,10 +127,10 @@ public class GamePrototype extends JComponent {
     }
 
     public void updateObstarclePosition(int x, int y) {
-        obstarcleX.x = x;
+        obstacleX.x = x;
         //obstarcleX.y = y;
         //obstarcleY.x = x;
-        obstarcleY.y = y;
+        obstacleY.y = y;
         repaint();
     }
 
@@ -138,8 +138,8 @@ public class GamePrototype extends JComponent {
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
         unit.draw(g);
-        obstarcleX.draw(g);
-        obstarcleY.draw(g);
+        obstacleX.draw(g);
+        obstacleY.draw(g);
     }
 
     // 필요하다면 외부에서 호출할 stop() (일시 정지는 크게 신경 안써도 된다고 해서 간단히 처리)
