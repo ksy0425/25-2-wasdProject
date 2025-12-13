@@ -26,8 +26,12 @@ public class ClientWindow extends JFrame {
         ConnectionManager.setWindow(this);
         FileReader fr = null;
         BufferedReader br = null;
+
+        String jarPath = "server.txt";
+        String testPath = "src/resources/server.txt";
+
         try {
-            fr = new FileReader("src/resources/server.txt");
+            fr = new FileReader(testPath);
             br = new BufferedReader(fr);
             serverAddress = br.readLine();
             serverPort = Integer.parseInt(br.readLine());
