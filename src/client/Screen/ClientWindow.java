@@ -72,6 +72,8 @@ public class ClientWindow extends JFrame {
                 return new CreateRoomScreen(this);
             case "join":
                 return new JoinRoomScreen(this);
+            case "game":
+                return new GameScreen(this);
             default:
                 throw new IllegalArgumentException("Unknown screen: " + name);
         }

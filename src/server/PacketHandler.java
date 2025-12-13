@@ -18,6 +18,7 @@ public class PacketHandler {
     }
 
     public void handle(Packet packet) {
+        System.out.println("[SERVER] PacketHandler.handle: " + packet.getClass().getName());
 
         if (packet instanceof LoginRequestPacket p) {
             handleLogin(p);
@@ -32,6 +33,9 @@ public class PacketHandler {
 
         } else if (packet instanceof  GameStartRequestPacket p) {
             handleGameStart(p);
+        } else if (packet instanceof MovePacket p) {
+            System.out.println("[SERVER] instanceof MovePacket 통과!");
+            handleMove(p);
         } else {
             window.printDisplay("알 수 없는 패킷: " + packet.getClass().getSimpleName());
         }
@@ -99,6 +103,23 @@ public class PacketHandler {
 
             playersKey.put(playerId, key);
         }
-        roomManager.getRoom(packet.getTitle()).broadcast(new GameStartResponsePacket(playersKey));
+        GameRoom room = roomManager.getRoom(packet.getTitle());
+        if (room != null) {
+            room.broadcast(new GameStartResponsePacket(playersKey));
+            room.startGameLoop();   // ★ 여기서 공유 유닛 게임 루프 시작
+        }
+    }
+
+    private void handleMove(MovePacket packet) {
+//        System.out.println("!!!![SERVER] MovePacket from playerId=" + packet.getPlayerId()
+//                + ", dir=" + packet.getDirection());
+        window.printDisplay("!!!![SERVER] MovePacket from playerId=" + packet.getPlayerId()
+                + ", dir=" + packet.getDirection());
+        GameRoom room = client.getCurrentRoom();
+        if (room == null) return;
+
+        // 단순히 방에 위임하면 됨 (Last Input Wins 논리는 GameRoom에 있음)
+        System.out.println("====" + packet.getPlayerId() +", " + packet.getDirection()+"====");
+        room.handleMove(packet);
     }
 }

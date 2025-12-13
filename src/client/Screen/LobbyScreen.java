@@ -16,7 +16,7 @@ import java.awt.*;
 public class LobbyScreen extends JPanel {
 
     private ClientWindow window;
-    private JButton b_back;
+    public JButton startButton, b_back;
     private String title;
     private int hostId;
     private ClientPacketHandler handler;
@@ -100,7 +100,7 @@ public class LobbyScreen extends JPanel {
 
         JPanel rightPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
         rightPanel.setOpaque(false);
-        JButton startButton = new JButton();
+        startButton = new JButton();
         if(isHost()) {
             startButton.setVisible(true);
             startButton.setText("시작하기");

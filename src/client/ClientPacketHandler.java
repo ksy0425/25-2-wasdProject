@@ -2,11 +2,14 @@
 package client;
 
 import client.Screen.ClientWindow;
+import client.Screen.LobbyScreen;
 import client.Screen.util.RoomPanel;
 import client.network.ClientSender;
 import client.network.ConnectionManager;
 import shared.model.PlayerState;
 import shared.packet.*;
+import client.game.GamePrototype;
+
 
 import javax.swing.*;
 import java.util.Map;
@@ -52,6 +55,8 @@ public class ClientPacketHandler {
             handleRoomInfo(p);
         } else if (packet instanceof GameStartResponsePacket p) {
             handleGameStart(p);
+        } else if (packet instanceof SyncPacket p) {
+            handleSync(p);
         } else {
             System.out.println("[CLIENT] 알 수 없는 패킷 수신: " + packet.getClass().getSimpleName());
         }
@@ -145,16 +150,47 @@ public class ClientPacketHandler {
 
         for (Map.Entry<Integer, String> entry : playersKey.entrySet()) {
             Integer playerId = entry.getKey();   // 서버에서 내려준 playerId
-            System.out.println("====" + entry.getKey() + "====");
             String keyRole = entry.getValue();   // ex) "W", "A", "S", "D"
-            System.out.println("====" + entry.getValue() + "====");
 
-            PlayerState ps = players.get(playerId);  // ClientPacketHandler의 players 맵에서 찾기
+            System.out.println("[DEBUG] GameStart: playerId=" + playerId + ", keyRole='" + keyRole + "'");
+
+            PlayerState ps = players.get(playerId);  // players 맵에서 찾기
             if (ps != null) {
-                ps.setKeyRole(keyRole);          // 키 역할 세팅
+                ps.setKeyRole(keyRole);          // players 쪽 객체에 키 역할 세팅
+
+                // ★ me도 같이 업데이트 (같은 사람이면)
+                if (me != null && me.getPlayerId() == playerId) {
+                    me.setKeyRole(keyRole);
+                    System.out.println("[DEBUG] me 업데이트: id=" + me.getPlayerId()
+                            + ", keyRole='" + me.getKeyRole() + "'");
+                }
+            } else {
+                System.out.println("[DEBUG] handleGameStart: players 맵에서 playerId=" + playerId + " 찾기 실패");
             }
         }
         window.showScreen("lobby");
+
+        // 호스트, 클라이언트 시작 버튼 강제 활성화 후  시간 표시
+        LobbyScreen lobby = window.getLobbyScreen();
+        lobby.startButton.setVisible(true);
+        for (int i=10; i>0; i--) {
+            try {
+                Thread.sleep(1000);
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            } finally {
+                lobby.startButton.setText(i + "초 후 시작");
+            }
+        }
+        window.showScreen("game");
+    }
+
+    private void handleSync(SyncPacket packet) {
+        GamePrototype gp = GamePrototype.getInstance();
+        if (gp != null) {
+            gp.updateUnitPosition(packet.getX(), packet.getY());
+        }
+        //System.out.println("====" + packet.getX() + ", " + packet.getY()+"====");
     }
 
     public void onDisconnected() {
