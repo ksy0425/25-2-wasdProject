@@ -26,6 +26,12 @@ public class GameRoom {
     private int unitY = 200;
     private int vx = 0;
     private int vy = 0;
+    private int obstarcleX_x = 100;
+    //private int obstarcleX_y = 400;
+    //private int obstarcleY_x = 600;
+    private int obstarcleY_y = 100;
+    private int oX = 0;
+    private int oY = 0;
     private volatile boolean gameRunning = false;
 
     public GameRoom(String roomTitle, ClientHandler host) {
@@ -116,6 +122,8 @@ public class GameRoom {
     public synchronized void startGameLoop() {
         if (gameRunning) return;   // 중복 시작 방지
         gameRunning = true;
+        oX = 1;
+        oY = 1;
         Thread loop = new Thread(() -> {
             while (gameRunning) {
                 stepGame();
@@ -133,35 +141,78 @@ public class GameRoom {
         int nextX = unitX + vx * speed;
         int nextY = unitY + vy * speed;
 
-        boolean hitBoundary = false;
+        // ✅ 경계 체크(보정) 메서드 사용
+        int clampedX = collisionX(nextX);
+        int clampedY = collisionY(nextY);
 
-        // X 방향 경계 체크
-        if (nextX < 0) {
-            nextX = 0;
-            hitBoundary = true;
-        } else if (nextX > WORLD_WIDTH - UNIT_SIZE) {
-            nextX = WORLD_WIDTH - UNIT_SIZE;
-            hitBoundary = true;
-        }
+        boolean hitBoundary = (clampedX != nextX) || (clampedY != nextY);
 
-        // Y 방향 경계 체크
-        if (nextY < 0) {
-            nextY = 0;
-            hitBoundary = true;
-        } else if (nextY > WORLD_HEIGHT - UNIT_SIZE) {
-            nextY = WORLD_HEIGHT - UNIT_SIZE;
-            hitBoundary = true;
-        }
+        unitX = clampedX;
+        unitY = clampedY;
 
-        unitX = nextX;
-        unitY = nextY;
+        moveObstacleX();
+        moveObstacleY();
 
-        // 경계에 닿으면 멈추게 (속도 0으로)
         if (hitBoundary) {
             vx = 0;
             vy = 0;
         }
-        broadcast(new SyncPacket(unitX, unitY));
+
+        broadcast(new SyncPacket(unitX, unitY, obstarcleX_x, obstarcleY_y));
+    }
+
+    private int collisionX(int x) {
+        if (x < 0) return 0;
+        if (x > WORLD_WIDTH - UNIT_SIZE) return WORLD_WIDTH - UNIT_SIZE;
+        return x;
+    }
+
+    private int collisionY(int y) {
+        if (y < 0) return 0;
+        if (y > WORLD_HEIGHT - UNIT_SIZE) return WORLD_HEIGHT - UNIT_SIZE;
+        return y;
+    }
+
+    private void moveObstacleX() {
+        // 다음 위치 계산
+        int next = obstarcleX_x + oX;
+
+        // 오른쪽 끝(600) 닿으면 600에 고정 + 방향 반전(왼쪽으로)
+        if (next >= 600) {
+            obstarcleX_x = 600;
+            oX = -1;
+            return;
+        }
+
+        // 왼쪽 끝(100) 닿으면 100에 고정 + 방향 반전(오른쪽으로)
+        if (next <= 100) {
+            obstarcleX_x = 100;
+            oX = 1;
+            return;
+        }
+
+        // 범위 안이면 그냥 이동
+        obstarcleX_x = next;
+    }
+
+    private void moveObstacleY() {
+        int next = obstarcleY_y + oY;
+
+        // 아래쪽 끝(OB_MAX_Y) 닿으면 아래로 못 가게 고정 + 위로 반전
+        if (next >= 600) {
+            obstarcleY_y = 600;
+            oY = -1;
+            return;
+        }
+
+        // 위쪽 끝(OB_MIN_Y) 닿으면 위로 못 가게 고정 + 아래로 반전
+        if (next <= 100) {
+            obstarcleY_y = 100;
+            oY = 1;
+            return;
+        }
+
+        obstarcleY_y = next;
     }
 
     public synchronized void stopGameLoop() {

@@ -189,6 +189,7 @@ public class ClientPacketHandler {
         GamePrototype gp = GamePrototype.getInstance();
         if (gp != null) {
             gp.updateUnitPosition(packet.getX(), packet.getY());
+            gp.updateObstarclePosition(packet.getOx(), packet.getOy());
         }
         //System.out.println("====" + packet.getX() + ", " + packet.getY()+"====");
     }

@@ -34,37 +34,37 @@ public class Unit {
         return this.y;
     }
 
-    public void startMoving(int direction) {
-        if (direction == LEFT) {
-            xDirection = -1;
-            yDirection = 0;
-        } if (direction == RIGHT) {
-            xDirection = 1;
-            yDirection = 0;
-        } if (direction == UP) {
-            xDirection = 0;
-            yDirection = -1;
-        } if (direction == DOWN) {
-            xDirection = 0;
-            yDirection = 1;
-        }
-    }
-
-    public void stopMoving() {
-        this.xDirection = 0;
-        this.yDirection =0;
-    }
-
-    public void move() {
-        this.preX = x;
-        this.preY = y;
-        x += xDirection * MOVE_DISTANCE;
-        y += yDirection * MOVE_DISTANCE;
-
-    }
-
-    public void moveBack() {
-        x = preX;
-        y = preY;
-    }
+//    public void startMoving(int direction) {
+//        if (direction == LEFT) {
+//            xDirection = -1;
+//            yDirection = 0;
+//        } if (direction == RIGHT) {
+//            xDirection = 1;
+//            yDirection = 0;
+//        } if (direction == UP) {
+//            xDirection = 0;
+//            yDirection = -1;
+//        } if (direction == DOWN) {
+//            xDirection = 0;
+//            yDirection = 1;
+//        }
+//    }
+//
+//    public void stopMoving() {
+//        this.xDirection = 0;
+//        this.yDirection =0;
+//    }
+//
+//    public void move() {
+//        this.preX = x;
+//        this.preY = y;
+//        x += xDirection * MOVE_DISTANCE;
+//        y += yDirection * MOVE_DISTANCE;
+//
+//    }
+//
+//    public void moveBack() {
+//        x = preX;
+//        y = preY;
+//    }
 }
