@@ -127,13 +127,14 @@ public class ClientPacketHandler {
             }
             players.put(ps.getPlayerId(), ps);
         }
+
         System.out.println("isBoom : " + isBoom);
-
-
         System.out.println("[CLIENT] 방 정보 갱신: "
                 + packet.getRoomTitle() + " / 인원 = " + players.size());
 
         if (isBoom) {
+            players.clear();
+
             window.setHostId(-1);
             ClientSender.send(new LeaveRoomPacket());
             window.showScreen("main");

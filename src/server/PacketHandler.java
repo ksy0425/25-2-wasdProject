@@ -61,9 +61,17 @@ public class PacketHandler {
         String title = packet.getRoomTitle();
         boolean ok = roomManager.createRoom(title, client);
 
+        GameRoom room = roomManager.getRoom(title);
+        int hostId = (ok && room != null) ? room.getHostId() : -1;
+
         client.send(new CreateRoomResponsePacket(
-                packet.getRoomTitle(), roomManager.getRoom(title).getHostId(), ok, ok ? "" : "이미 존재하는 방 제목입니다."
+                title, hostId, ok, ok ? "" : "이미 존재하는 방 제목입니다."
         ));
+
+        // ★ 방 생성 성공했으면 호스트 포함 전체 RoomInfo 갱신
+        if (ok && room != null) {
+            room.broadcastRoomInfo();
+        }
     }
 
     private void handleJoinRoom(JoinRoomRequestPacket packet) {

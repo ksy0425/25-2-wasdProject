@@ -37,6 +37,8 @@ public class RoomManager {
     }
 
     public synchronized void removeClient(ClientHandler handler) {
+        leaveRoom(handler); // 호스트가 튕겨도 방 정리
+
         System.out.println("삭제 닉네임 : " + playerNicknames.get(handler.getPlayerId()));
         clients.remove(handler);
         playerNicknames.remove(handler.getPlayerId());
@@ -89,6 +91,8 @@ public class RoomManager {
     public synchronized void removeRoom(String roomTitle) {
         GameRoom room = rooms.get(roomTitle);
         if (room == null) return;
+
+        room.stopGameLoop();
 
         Vector<ClientHandler> playerCopy = room.getPlayers();
 
