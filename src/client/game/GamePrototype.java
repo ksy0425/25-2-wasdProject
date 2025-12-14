@@ -7,10 +7,14 @@ import client.network.ConnectionManager;
 import shared.model.PlayerState;
 import shared.packet.MovePacket;
 
+import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
+import java.awt.image.BufferedImage;
+import java.util.HashMap;
+import java.util.Map;
 
 public class GamePrototype extends JComponent {
 
@@ -21,9 +25,14 @@ public class GamePrototype extends JComponent {
     private Obstacle obstacleX, obstacleY;
     private final int myPlayerId;
     private final String keyRole; // "w", "a", "s", "d"
+    private int dir;
+
+    private final Map<Integer, BufferedImage> unitSprites = new HashMap<>();
 
     public GamePrototype() {
         instance = this;
+
+        loadUnitSprites();
 
         PlayerState me = ConnectionManager.getHandler().getMe();
         if (me != null) {
@@ -56,6 +65,21 @@ public class GamePrototype extends JComponent {
         });
     }
 
+    private BufferedImage loadSprite(String path) {
+        try {
+            return ImageIO.read(getClass().getResource(path));
+        } catch (Exception e) {
+            throw new RuntimeException("스프라이트 로딩 실패: " + path, e);
+        }
+    }
+
+    private void loadUnitSprites() {
+        unitSprites.put(Unit.UP,    loadSprite("/up.png"));
+        unitSprites.put(Unit.DOWN,  loadSprite("/down.png"));
+        unitSprites.put(Unit.LEFT,  loadSprite("/left.png"));
+        unitSprites.put(Unit.RIGHT, loadSprite("/right.png"));
+    }
+
     public static GamePrototype getInstance() {
         return instance;
     }
@@ -75,7 +99,7 @@ public class GamePrototype extends JComponent {
 
         if (myPlayerId < 0) return;
 
-        int dir = -1;
+        dir = -1;
 
         // 내게 부여된 키 역할에 따라 어떤 방향 패킷을 보낼지 결정
         switch (keyRole) {
@@ -114,15 +138,18 @@ public class GamePrototype extends JComponent {
         System.out.println("[DEBUG] dir 계산 결과 = " + dir);
         if (dir != -1) {
             System.out.println("[DEBUG] send MovePacket, dir=" + dir + ", myId=" + myPlayerId);
+            //Unit meUnit = unit.getUnit(); // 너희 구조에 맞게 가져오기 (Map이면 get)
+            if (unit != null) unit.setFacing(dir);
             ClientSender.send(new MovePacket(myPlayerId, dir));
         }
     }
 
     // 서버에서 SyncPacket으로 보내준 좌표를 반영
-    public void updateUnitPosition(int x, int y) {
+    public void updateUnitState(int x, int y, int dir) {
         //System.out.println("[GAME] updateUnitPosition: " + x + ", " + y);
         unit.x = x;
         unit.y = y;
+        unit.setFacing(dir);
         repaint();
     }
 
@@ -137,7 +164,11 @@ public class GamePrototype extends JComponent {
     @Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
-        unit.draw(g);
+        if (unit == null) return;
+
+        BufferedImage img = unitSprites.getOrDefault(unit.getFacing(), unitSprites.get(Unit.DOWN));
+        g.drawImage(img, unit.getX(), unit.getY(), Unit.UNIT_SIZE, Unit.UNIT_SIZE, null);
+
         obstacleX.draw(g);
         obstacleY.draw(g);
     }

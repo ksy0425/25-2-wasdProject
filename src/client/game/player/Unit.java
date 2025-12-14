@@ -12,6 +12,7 @@ public class Unit {
     private int preX, preY;
     public static final int LEFT = 1, RIGHT = 2, UP = 3, DOWN = 4;
     private int xDirection, yDirection;
+    private int facing = DOWN;
 
     public Unit (Color color, int x, int y) {
         this.color = color;
@@ -34,37 +35,10 @@ public class Unit {
         return this.y;
     }
 
-//    public void startMoving(int direction) {
-//        if (direction == LEFT) {
-//            xDirection = -1;
-//            yDirection = 0;
-//        } if (direction == RIGHT) {
-//            xDirection = 1;
-//            yDirection = 0;
-//        } if (direction == UP) {
-//            xDirection = 0;
-//            yDirection = -1;
-//        } if (direction == DOWN) {
-//            xDirection = 0;
-//            yDirection = 1;
-//        }
-//    }
-//
-//    public void stopMoving() {
-//        this.xDirection = 0;
-//        this.yDirection =0;
-//    }
-//
-//    public void move() {
-//        this.preX = x;
-//        this.preY = y;
-//        x += xDirection * MOVE_DISTANCE;
-//        y += yDirection * MOVE_DISTANCE;
-//
-//    }
-//
-//    public void moveBack() {
-//        x = preX;
-//        y = preY;
-//    }
+    public Unit getUnit() { return this; }
+
+    public int getFacing() { return facing; }
+
+    public void setFacing(int dir) { this.facing = dir; }
+
 }

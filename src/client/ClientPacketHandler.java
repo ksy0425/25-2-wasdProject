@@ -189,7 +189,7 @@ public class ClientPacketHandler {
     private void handleSync(SyncPacket packet) {
         GamePrototype gp = GamePrototype.getInstance();
         if (gp != null) {
-            gp.updateUnitPosition(packet.getX(), packet.getY());
+            gp.updateUnitState(packet.getX(), packet.getY(), packet.getDir());
             gp.updateObstarclePosition(packet.getOx(), packet.getOy());
         }
         //System.out.println("====" + packet.getX() + ", " + packet.getY()+"====");

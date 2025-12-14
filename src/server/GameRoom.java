@@ -35,6 +35,7 @@ public class GameRoom {
     private int unitY = SPAWN_Y;
     private int vx = 0;
     private int vy = 0;
+    private int lastDir = 0;
 
     private int obstarcleX_x = 100;
     private int obstarcleY_y = 100;
@@ -110,7 +111,9 @@ public class GameRoom {
             case MovePacket.UP -> { vx = 0; vy = -1; }
             case MovePacket.DOWN -> { vx = 0; vy = 1; }
         }
-        // 어떤 플레이어의 입력이든, 가장 마지막에 온 방향이 현재 방향이 된다.
+        if (dir != MovePacket.STOP) {
+            lastDir = dir;
+        }
     }
 
     public synchronized void startGameLoop() {
@@ -167,7 +170,7 @@ public class GameRoom {
             respawnUnit();
         }
 
-        broadcast(new SyncPacket(unitX, unitY, obstarcleX_x, obstarcleY_y));
+        broadcast(new SyncPacket(unitX, unitY, obstarcleX_x, obstarcleY_y, lastDir));
     }
 
     private void respawnUnit() {
@@ -175,6 +178,7 @@ public class GameRoom {
         unitY = SPAWN_Y;
         vx = 0;
         vy = 0;
+        lastDir=0;
     }
 
     private boolean isCollidingWithAnyObstacle() {
