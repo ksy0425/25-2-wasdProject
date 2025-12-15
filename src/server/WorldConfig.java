@@ -26,14 +26,16 @@ public final class WorldConfig {
     private static final double SPAWN_P2_Y = 782.0;
 
     // ✅ 기본 스폰(시작 지점) — 너가 쓰던 값 유지
-    public static final int SPAWN_X = (int) Math.round(((SPAWN_P1_X + SPAWN_P2_X) / 2.0) - (UNIT_SIZE_WIDTH / 2.0));
-    public static final int SPAWN_Y = (int) Math.round(((SPAWN_P1_Y + SPAWN_P2_Y) / 2.0) - (UNIT_SIZE_HEIGHT / 2.0));
+//    public static final int SPAWN_X = (int) Math.round(((SPAWN_P1_X + SPAWN_P2_X) / 2.0) - (UNIT_SIZE_WIDTH / 2.0));
+//    public static final int SPAWN_Y = (int) Math.round(((SPAWN_P1_Y + SPAWN_P2_Y) / 2.0) - (UNIT_SIZE_HEIGHT / 2.0));
     //public static final int SPAWN_X = 1211;
     //public static final int SPAWN_Y = 288;
 
     // ✅ 체크포인트/엔드 사각형 (좌상단(x1,y1) ~ 우하단(x2,y2))
     private static final int CP1_X1 = 369, CP1_Y1 = 27,  CP1_X2 = 494, CP1_Y2 = 139;
     private static final int CP2_X1 = 1041, CP2_Y1 = 686, CP2_X2 = 1166, CP2_Y2 = 799;
+    public static final int SPAWN_X = (int) Math.round(((CP1_X1 + CP1_X2) / 2.0) - (UNIT_SIZE_WIDTH / 2.0));
+    public static final int SPAWN_Y = (int) Math.round(((CP1_Y1 + CP1_Y2) / 2.0) - (UNIT_SIZE_HEIGHT / 2.0));
 
     // end는 "아래 변(y=195) 라인"을 밟으면 종료라고 했으니, 일단 사각형으로 처리
     private static final int END_X1 = 1162, END_Y1 = 60,  END_X2 = 1292, END_Y2 = 173;

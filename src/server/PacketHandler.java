@@ -99,12 +99,15 @@ public class PacketHandler {
 
     private void handleLeaveRoom(LeaveRoomPacket packet) {
         roomManager.leaveRoom(client);
-
-        roomManager.broadcastLobby(new PlayerLeftRoomPacket(client.getPlayerId()));
     }
 
     private void handleGameStart(GameStartRequestPacket packet) {
         List<PlayerState> players = packet.getPlayerStateList();
+
+        if (players.size() < 4) {
+            client.send(new GameStartResponsePacket(null, false));
+            return;
+        }
 
         List<String> keys = new ArrayList<>();
         keys.add("w");
@@ -125,7 +128,7 @@ public class PacketHandler {
         }
         GameRoom room = roomManager.getRoom(packet.getTitle());
         if (room != null) {
-            room.broadcast(new GameStartResponsePacket(playersKey));
+            room.broadcast(new GameStartResponsePacket(playersKey, true));
             room.startGameLoop();   // ★ 여기서 공유 유닛 게임 루프 시작
         }
     }

@@ -3,7 +3,7 @@ package client.game.obstacle;
 import java.awt.*;
 
 public class Obstacle {
-    public static final int UNIT_SIZE=40;
+    public static final int OBSTACLE_SIZE=40;
     private static final int MOVE_DISTANCE = 1;
     private Color color;
     public int x, y;
@@ -31,7 +31,7 @@ public class Obstacle {
 
     public void draw(Graphics g) {
         g.setColor(color);
-        g.fillRect(x, y, UNIT_SIZE, UNIT_SIZE);
+        g.fillRect(x, y, OBSTACLE_SIZE, OBSTACLE_SIZE);
     }
 
 //    public void move() {

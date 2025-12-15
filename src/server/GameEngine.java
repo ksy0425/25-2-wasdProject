@@ -5,6 +5,9 @@ import shared.packet.SyncPacket;
 
 import static client.game.player.Unit.UNIT_SIZE_WIDTH;
 import static client.game.player.Unit.UNIT_SIZE_HEIGHT;
+import static client.game.obstacle.Obstacle.OBSTACLE_SIZE;
+import static server.WorldConfig.OBSTACLE_X_FIXED_Y;
+import static server.WorldConfig.OBSTACLE_Y_FIXED_X;
 
 public class GameEngine {
 
@@ -114,6 +117,14 @@ public class GameEngine {
             unitY = clampedY;
         }
 
+        moveObstacleX();
+        moveObstacleY();
+
+        // 기존: 장애물 충돌 리스폰
+        if (isCollidingWithAnyObstacle()) {
+            respawnUnit();
+        }
+
         // ✅ 체크포인트 밟았는지 업데이트(이동/리스폰 후에 체크)
         updateCheckpointIfNeeded();
 
@@ -121,6 +132,64 @@ public class GameEngine {
         checkEndPoint();
 
         return new SyncPacket(unitX, unitY, obstarcleX_x, obstarcleY_y, lastDir, elapsedMsForSync(), finished);
+    }
+
+    private boolean isCollidingWithAnyObstacle() {
+        // 장애물 1: (obstarcleX_x, 400)
+        boolean hitXObstacle = intersects(
+                unitX, unitY, UNIT_SIZE_WIDTH, UNIT_SIZE_HEIGHT,
+                obstarcleX_x, OBSTACLE_X_FIXED_Y, OBSTACLE_SIZE, OBSTACLE_SIZE
+        );
+
+        // 장애물 2: (600, obstarcleY_y)
+        boolean hitYObstacle = intersects(
+                unitX, unitY, UNIT_SIZE_WIDTH, UNIT_SIZE_HEIGHT,
+                OBSTACLE_Y_FIXED_X, obstarcleY_y, OBSTACLE_SIZE, OBSTACLE_SIZE
+        );
+
+        return hitXObstacle || hitYObstacle;
+    }
+
+    private void moveObstacleX() {
+        // 다음 위치 계산
+        int next = obstarcleX_x + oX;
+
+        // 오른쪽 끝(600) 닿으면 600에 고정 + 방향 반전(왼쪽으로)
+        if (next >= 600) {
+            obstarcleX_x = 600;
+            oX = -1;
+            return;
+        }
+
+        // 왼쪽 끝(100) 닿으면 100에 고정 + 방향 반전(오른쪽으로)
+        if (next <= 100) {
+            obstarcleX_x = 100;
+            oX = 1;
+            return;
+        }
+
+        // 범위 안이면 그냥 이동
+        obstarcleX_x = next;
+    }
+
+    private void moveObstacleY() {
+        int next = obstarcleY_y + oY;
+
+        // 아래쪽 끝(OB_MAX_Y) 닿으면 아래로 못 가게 고정 + 위로 반전
+        if (next >= 600) {
+            obstarcleY_y = 600;
+            oY = -1;
+            return;
+        }
+
+        // 위쪽 끝(OB_MIN_Y) 닿으면 위로 못 가게 고정 + 아래로 반전
+        if (next <= 100) {
+            obstarcleY_y = 100;
+            oY = 1;
+            return;
+        }
+
+        obstarcleY_y = next;
     }
 
     private void updateCheckpointIfNeeded() {

@@ -147,6 +147,10 @@ public class ClientPacketHandler {
     }
 
     public void handleGameStart(GameStartResponsePacket p) {
+        if (!(p.isAccepted())) {
+            JOptionPane.showMessageDialog(window, "현재 방 인원이 4명이 아닙니다.", "알림", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
         RoomPanel roomPanel = window.getLobbyScreen().getRoomPanel();
         Map<Integer, String> playersKey = p.getPlayersKey();
 

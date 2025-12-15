@@ -58,7 +58,6 @@ public class GamePrototype extends JComponent {
         //장애물 생성
         obstacleX = new Obstacle(Color.BLACK, 100, 400);
         obstacleY = new Obstacle(Color.BLACK, 600, 100);
-        //obstarcle.startMoving(1);
 
         setFocusable(true);
         setOpaque(false);
@@ -169,8 +168,6 @@ public class GamePrototype extends JComponent {
 
     public void updateObstarclePosition(int x, int y) {
         obstacleX.x = x;
-        //obstarcleX.y = y;
-        //obstarcleY.x = x;
         obstacleY.y = y;
         repaint();
     }
