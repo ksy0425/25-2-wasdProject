@@ -126,7 +126,6 @@ public class PacketHandler {
         GameRoom room = roomManager.getRoom(packet.getTitle());
         if (room != null) {
             room.broadcast(new GameStartResponsePacket(playersKey));
-            room.startTimerIfNeeded();
             room.startGameLoop();   // ★ 여기서 공유 유닛 게임 루프 시작
         }
     }

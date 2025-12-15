@@ -182,23 +182,19 @@ public class GamePrototype extends JComponent {
 
         BufferedImage img = unitSprites.getOrDefault(unit.getFacing(), unitSprites.get(Unit.DOWN));
         g.drawImage(img, unit.getX(), unit.getY(), Unit.UNIT_SIZE_WIDTH, Unit.UNIT_SIZE_HEIGHT, null);
-        Color color = Color.RED;
-        g.setColor(color);
-        g.fillRect(unit.getX(), unit.getY(), Unit.UNIT_SIZE_WIDTH, Unit.UNIT_SIZE_HEIGHT);
 
         obstacleX.draw(g);
         obstacleY.draw(g);
 
-        Graphics g2 = g.create();
         String text = formatMs(elapsedMs);
 
-        g2.setFont(new Font("Dialog", Font.BOLD, 18));
-        g2.setColor(new Color(0, 0, 0, 140));
-        g2.fillRoundRect(10, 10, 120, 28, 12, 12);
+        g.setFont(new Font("Dialog", Font.BOLD, 18));
+        g.setColor(new Color(0, 0, 0, 140));
+        g.fillRoundRect(10, 10, 120, 28, 12, 12);
 
-        g2.setColor(Color.WHITE);
-        g2.drawString(text, 18, 30);
-        g2.dispose();
+        g.setColor(Color.WHITE);
+        g.drawString(text, 18, 30);
+        g.dispose();
     }
 
     // 필요하다면 외부에서 호출할 stop() (일시 정지는 크게 신경 안써도 된다고 해서 간단히 처리)
