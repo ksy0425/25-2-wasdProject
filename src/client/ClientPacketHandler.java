@@ -111,6 +111,7 @@ public class ClientPacketHandler {
             window.showScreen("lobby");
         } else {
             System.out.println("[CLIENT] 방 참가 실패: " + msg);
+            JOptionPane.showMessageDialog(null, msg, "알림", JOptionPane.WARNING_MESSAGE);
         }
     }
 

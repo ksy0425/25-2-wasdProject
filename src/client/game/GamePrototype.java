@@ -1,5 +1,6 @@
 package client.game;
 
+import client.Screen.util.GameMapPanel;
 import client.game.obstacle.Obstacle;
 import client.game.player.Unit;
 import client.network.ClientSender;
@@ -12,6 +13,8 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
 import java.util.HashMap;
 import java.util.Map;
@@ -47,7 +50,10 @@ public class GamePrototype extends JComponent {
         }
 
         // 유닛 초기 위치 (적당히 조정 가능)
-        unit = new Unit(Color.RED, 200, 200);
+        // 서버 스폰과 동일 계산 (중간점 - half size)
+        int spawnX = (int) Math.round(((85.0 + 210.0) / 2.0) - (Unit.UNIT_SIZE_WIDTH / 2.0));
+        int spawnY = (int) Math.round(((674.0 + 782.0) / 2.0) - (Unit.UNIT_SIZE_HEIGHT / 2.0));
+        unit = new Unit(spawnX, spawnY);
         //장애물 생성
         obstacleX = new Obstacle(Color.BLACK, 100, 400);
         obstacleY = new Obstacle(Color.BLACK, 600, 100);
@@ -61,6 +67,13 @@ public class GamePrototype extends JComponent {
             @Override
             public void keyPressed(KeyEvent e) {
                 handleKeyPressed(e);
+            }
+        });
+
+        addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                System.out.println("x: " + e.getPoint().getX() + " y:" + e.getPoint().getY());
             }
         });
     }
@@ -167,7 +180,10 @@ public class GamePrototype extends JComponent {
         if (unit == null) return;
 
         BufferedImage img = unitSprites.getOrDefault(unit.getFacing(), unitSprites.get(Unit.DOWN));
-        g.drawImage(img, unit.getX(), unit.getY(), Unit.UNIT_SIZE, Unit.UNIT_SIZE, null);
+        g.drawImage(img, unit.getX(), unit.getY(), Unit.UNIT_SIZE_WIDTH, Unit.UNIT_SIZE_HEIGHT, null);
+        Color color = Color.RED;
+        g.setColor(color);
+        g.fillRect(unit.getX(), unit.getY(), Unit.UNIT_SIZE_WIDTH, Unit.UNIT_SIZE_HEIGHT);
 
         obstacleX.draw(g);
         obstacleY.draw(g);

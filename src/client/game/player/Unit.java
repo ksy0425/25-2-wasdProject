@@ -5,7 +5,8 @@ import java.awt.Graphics;
 
 public class Unit {
 
-    public static final int UNIT_SIZE=40;
+    public static final int UNIT_SIZE_WIDTH=30;
+    public static final int UNIT_SIZE_HEIGHT=40;
     private static final int MOVE_DISTANCE = 1;
     private Color color;
     public int x, y;
@@ -14,17 +15,12 @@ public class Unit {
     private int xDirection, yDirection;
     private int facing = DOWN;
 
-    public Unit (Color color, int x, int y) {
+    public Unit (int x, int y) {
         this.color = color;
         this.x = x;
         this.y = y;
         this.xDirection = 0;
         this.yDirection = 0;
-    }
-
-    public void draw(Graphics g) {
-        g.setColor(color);
-        g.fillRect(x, y, UNIT_SIZE, UNIT_SIZE);
     }
 
     public int getX() {

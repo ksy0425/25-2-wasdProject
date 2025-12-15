@@ -76,8 +76,18 @@ public class ClientWindow extends JFrame {
         container.removeAll();
         container.add(newScreen, name);
         cardLayout.show(container, name);
+
         container.revalidate();
         container.repaint();
+
+        if ("game".equals(name)) {
+            pack();                 // preferredSize 반영
+            setResizable(false);    // 맵/좌표계 고정
+        } else {
+            // 게임 아닌 화면은 기존 고정 사이즈로
+            setSize(1400, 800);
+            setResizable(false);
+        }
     }
 
     public void alert(String message) {

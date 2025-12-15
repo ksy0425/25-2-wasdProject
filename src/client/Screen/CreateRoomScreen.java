@@ -79,6 +79,7 @@ public class CreateRoomScreen extends JPanel {
         t_roomTitle.setForeground(new Color(245, 245, 220));
         t_roomTitle.setBorder(new EmptyBorder(3,10,0,0));
         t_roomTitle.addMouseListener(new InputRoomEvent(t_roomTitle));
+        t_roomTitle.addActionListener(new CreateRoomEvent(t_roomTitle, window));
 
         titlePanel.add(t_roomTitle);
         flowTitlePanel.add(titlePanel);

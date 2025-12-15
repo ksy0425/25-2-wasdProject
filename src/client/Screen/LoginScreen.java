@@ -6,6 +6,8 @@ import shared.packet.LoginRequestPacket;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 public class LoginScreen extends JPanel {
 
@@ -33,6 +35,7 @@ public class LoginScreen extends JPanel {
         nicknameField = new JTextField(15);
         nicknameField.setMaximumSize(new Dimension(200, 40));
         nicknameField.setAlignmentX(Component.CENTER_ALIGNMENT);
+        nicknameField.addActionListener(onLoginEndter);
 
         JButton btn = new JButton("접속하기");
         btn.setAlignmentX(Component.CENTER_ALIGNMENT);
@@ -48,6 +51,13 @@ public class LoginScreen extends JPanel {
 
         return panel;
     }
+
+    private ActionListener onLoginEndter = new ActionListener() {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            onLoginClicked();
+        }
+    };
 
     private void onLoginClicked() {
         String nickname = nicknameField.getText().trim();

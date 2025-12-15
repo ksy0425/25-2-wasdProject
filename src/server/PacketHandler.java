@@ -76,13 +76,25 @@ public class PacketHandler {
 
     private void handleJoinRoom(JoinRoomRequestPacket packet) {
         String title = packet.getRoomTitle();
+
+        GameRoom room = roomManager.getRoom(title);
+        if (room == null) {
+            // 방 없음 → 연결 끊지 말고 실패 응답만 보내기
+            client.send(new JoinRoomResponsePacket(title, -1, false, "방이 존재하지 않습니다."));
+            return;
+        }
         boolean ok = roomManager.joinRoom(title, client);
 
         client.send(new JoinRoomResponsePacket(
-                packet.getRoomTitle(), roomManager.getRoom(title).getHostId(), ok, ok ? "" : "인원 초과 또는 방 없음"
+                title,
+                room.getHostId(),
+                ok,
+                ok ? "" : "인원 초과 또는 방 없음"
         ));
 
-        roomManager.getRoom(title).broadcastRoomInfo();
+        if (ok) {
+            room.broadcastRoomInfo();
+        }
     }
 
     private void handleLeaveRoom(LeaveRoomPacket packet) {
