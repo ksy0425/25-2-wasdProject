@@ -29,6 +29,7 @@ public class GamePrototype extends JComponent {
     private final int myPlayerId;
     private final String keyRole; // "w", "a", "s", "d"
     private int dir;
+    private volatile long elapsedMs = 0;
 
     private final Map<Integer, BufferedImage> unitSprites = new HashMap<>();
 
@@ -187,6 +188,17 @@ public class GamePrototype extends JComponent {
 
         obstacleX.draw(g);
         obstacleY.draw(g);
+
+        Graphics g2 = g.create();
+        String text = formatMs(elapsedMs);
+
+        g2.setFont(new Font("Dialog", Font.BOLD, 18));
+        g2.setColor(new Color(0, 0, 0, 140));
+        g2.fillRoundRect(10, 10, 120, 28, 12, 12);
+
+        g2.setColor(Color.WHITE);
+        g2.drawString(text, 18, 30);
+        g2.dispose();
     }
 
     // 필요하다면 외부에서 호출할 stop() (일시 정지는 크게 신경 안써도 된다고 해서 간단히 처리)
@@ -200,5 +212,17 @@ public class GamePrototype extends JComponent {
         super.addNotify();
         // 화면에 붙는 순간 포커스 시도
         requestFocusInWindow();
+    }
+
+    public void updateElapsedMs(long ms) {
+        this.elapsedMs = ms;
+        repaint();
+    }
+
+    private String formatMs(long ms) {
+        long m = ms / 60000;
+        long s = (ms % 60000) / 1000;
+        long r = ms % 1000;
+        return String.format("%02d:%02d.%03d", m, s, r);
     }
 }

@@ -193,7 +193,24 @@ public class ClientPacketHandler {
             gp.updateUnitState(packet.getX(), packet.getY(), packet.getDir());
             gp.updateObstarclePosition(packet.getOx(), packet.getOy());
         }
+        //String t = formatMs(packet.getElapsedMs());
+        gp.updateElapsedMs(packet.getElapsedMs());
         //System.out.println("====" + packet.getX() + ", " + packet.getY()+"====");
+
+        if (packet.getIsFinished()) {
+            JOptionPane.showMessageDialog(window,
+                    "기록: " + formatMs(packet.getElapsedMs()),
+                    "CLEAR!",
+                    JOptionPane.INFORMATION_MESSAGE
+            );
+            window.showScreen("lobby"); // 원하는 화면으로
+        }
+    }
+    private String formatMs(long ms) {
+        long m = ms / 60000;
+        long s = (ms % 60000) / 1000;
+        long r = ms % 1000;
+        return String.format("%02d:%02d.%03d", m, s, r);
     }
 
     public void onDisconnected() {

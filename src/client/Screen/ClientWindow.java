@@ -17,6 +17,7 @@ public class ClientWindow extends JFrame {
     private String roomTitle;
     private int hostId;
     private LobbyScreen lobbyScreen;
+    private GameScreen gameScreen;
     private String serverAddress;
     private int serverPort;
 
@@ -111,7 +112,8 @@ public class ClientWindow extends JFrame {
             case "join":
                 return new JoinRoomScreen(this);
             case "game":
-                return new GameScreen(this);
+                gameScreen = new GameScreen(this);
+                return gameScreen;
             default:
                 throw new IllegalArgumentException("Unknown screen: " + name);
         }
@@ -125,6 +127,7 @@ public class ClientWindow extends JFrame {
     }
 
     public LobbyScreen getLobbyScreen() { return lobbyScreen; }
+    public GameScreen getGameScreen() { return gameScreen; }
 
     public int  getHostId() { return hostId; }
     public void setHostId(int hostId) { this.hostId = hostId; }

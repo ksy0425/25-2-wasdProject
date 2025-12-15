@@ -44,6 +44,28 @@ public class GameRoom {
     private static final int SPAWN_X = (int) Math.round(((SPAWN_P1_X + SPAWN_P2_X) / 2.0) - (UNIT_SIZE_WIDTH / 2.0));
     private static final int SPAWN_Y = (int) Math.round(((SPAWN_P1_Y + SPAWN_P2_Y) / 2.0) - (UNIT_SIZE_HEIGHT / 2.0));
 
+    // ✅ 체크포인트/엔드 사각형 (좌상단(x1,y1) ~ 우하단(x2,y2))
+    private static final int CP1_X1 = 369, CP1_Y1 = 27,  CP1_X2 = 494, CP1_Y2 = 139;
+    private static final int CP2_X1 = 1041, CP2_Y1 = 686, CP2_X2 = 1166, CP2_Y2 = 799;
+
+    // end는 "아래 변(y=195) 라인"을 밟으면 종료라고 했으니, 일단 사각형으로 처리
+    private static final int END_X1 = 1162, END_Y1 = 60,  END_X2 = 1292, END_Y2 = 173;
+
+    // ✅ 현재 리스폰(스폰) 위치: 시작은 start 중앙으로
+    private int respawnX = SPAWN_X;
+    private int respawnY = SPAWN_Y;
+
+    // 밑에는 clear하기 위한 테스트용
+//    private int respawnX = 1211;
+//    private int respawnY = 280;
+
+    // ✅ 중복 처리 방지(체크포인트 여러 번 밟아도 스폰만 갱신)
+    private boolean cp1Activated = false;
+    private boolean cp2Activated = false;
+
+    // ✅ 게임 종료 플래그
+    private boolean finished = false;
+
     // ✅ 장애물 고정 좌표(클라이언트 Obstarcle 생성 좌표와 반드시 동일해야 함)
     private static final int OBSTACLE_X_FIXED_Y = 400; // (obstarcleX_x, 400)
     private static final int OBSTACLE_Y_FIXED_X = 600; // (600, obstarcleY_y)
@@ -59,6 +81,10 @@ public class GameRoom {
 
     private int oX = 0;
     private int oY = 0;
+
+    //타임 어택 관련
+    private long startedAtMs = -1;
+    private long clearTimeMs = -1;
 
     private volatile boolean gameRunning = false;
 
@@ -153,43 +179,13 @@ public class GameRoom {
     }
 
     private synchronized void stepGame() {
-//        int speed = 1;
-//        int nextX = unitX + vx * speed;
-//        int nextY = unitY + vy * speed;
-//
-//        int clampedX = collisionX(nextX);
-//        int clampedY = collisionY(nextY);
-//
-//        boolean hitBoundary = (clampedX != nextX) || (clampedY != nextY);
-//
-//        // =========================================================
-//        // ✅ [나중에 추가할 곳] "맵 벽(타일/장애물/벽체) 충돌 검사" 위치
-//        //    - 검사 대상 좌표는 보통 (clampedX, clampedY) 또는 (nextX, nextY)
-//        //    - 예: boolean hitMapWall = hitMapWall(clampedX, clampedY);
-//        // =========================================================
-//        // boolean hitMapWall = hitMapWall(clampedX, clampedY);
-//
-//        // ✅ 벽(월드 경계) 또는 맵 벽 충돌이면 리스폰 처리
-//        // if (hitBoundary || hitMapWall) {
-//        if (hitBoundary) { // 지금은 경계만 적용, 나중에 hitMapWall OR 조건으로 묶기
-//            respawnUnit();
-//        } else {
-//            unitX = clampedX;
-//            unitY = clampedY;
-//        }
-//
-//        // 장애물 이동
-//        moveObstacleX();
-//        moveObstacleY();
-//
-//        // 기존: 장애물 충돌 리스폰
-//        if (isCollidingWithAnyObstacle()) {
-//            respawnUnit();
-//        }
-//
-//        broadcast(new SyncPacket(unitX, unitY, obstarcleX_x, obstarcleY_y, lastDir));
+        // ✅ 시작 전: 움직임/충돌/리스폰 X, 그냥 카운트다운만 Sync로 뿌림
+        if (elapsedMs() < 0) {
+            broadcast(new SyncPacket(unitX, unitY, obstarcleX_x, obstarcleY_y, lastDir, elapsedMs(), finished));
+            return;
+        }
 
-        int speed = 1;
+        int speed = 2;
         int nextX = unitX + vx * speed;
         int nextY = unitY + vy * speed;
 
@@ -209,24 +205,31 @@ public class GameRoom {
             unitY = clampedY;
         }
 
-        moveObstacleX();
-        moveObstacleY();
+        // 장애물 이동 & 충돌
+//        moveObstacleX();
+//        moveObstacleY();
 
-        if (isCollidingWithAnyObstacle()) {
-            respawnUnit();
+//        if (isCollidingWithAnyObstacle()) {
+//            respawnUnit();
+//        }
+
+        // unitX/unitY가 확정된 다음
+        updateCheckpointAndEnd();
+
+        // 끝났으면 마지막 상태 한 번 뿌리고 return (선택)
+        if (finished) {
+            clearTimeMs = now() - startedAtMs;
+            broadcast(new SyncPacket(unitX, unitY, obstarcleX_x, obstarcleY_y, lastDir, clearTimeMs, finished));
+            stopGameLoop();
+            return;
         }
 
-        broadcast(new SyncPacket(unitX, unitY, obstarcleX_x, obstarcleY_y, lastDir));
+        broadcast(new SyncPacket(unitX, unitY, obstarcleX_x, obstarcleY_y, lastDir, elapsedMs(), finished));
     }
 
     private void respawnUnit() {
-//        unitX = SPAWN_X;
-//        unitY = SPAWN_Y;
-//        vx = 0;
-//        vy = 0;
-//        lastDir=0;
-        unitX = collisionX(SPAWN_X);
-        unitY = collisionY(SPAWN_Y);
+        unitX = collisionX(respawnX);
+        unitY = collisionY(respawnY);
         vx = 0;
         vy = 0;
         lastDir = 0;
@@ -302,6 +305,50 @@ public class GameRoom {
         obstarcleY_y = next;
     }
 
+    private boolean hitRect(int rx1, int ry1, int rx2, int ry2) {
+        int w = rx2 - rx1;
+        int h = ry2 - ry1;
+        return intersects(unitX, unitY, UNIT_SIZE_WIDTH, UNIT_SIZE_HEIGHT, rx1, ry1, w, h);
+    }
+
+    private int rectCenterSpawnX(int x1, int x2) {
+        double cx = (x1 + x2) / 2.0;
+        return (int) Math.round(cx - (UNIT_SIZE_WIDTH / 2.0));
+    }
+
+    private int rectCenterSpawnY(int y1, int y2) {
+        double cy = (y1 + y2) / 2.0;
+        return (int) Math.round(cy - (UNIT_SIZE_HEIGHT / 2.0));
+    }
+
+    private void updateCheckpointAndEnd() {
+        // 이미 끝났으면 더 처리 안 함
+        if (finished) return;
+
+        // ✅ 체크포인트1
+        if (!cp1Activated && hitRect(CP1_X1, CP1_Y1, CP1_X2, CP1_Y2)) {
+            cp1Activated = true;
+            respawnX = collisionX(rectCenterSpawnX(CP1_X1, CP1_X2));
+            respawnY = collisionY(rectCenterSpawnY(CP1_Y1, CP1_Y2));
+        }
+
+        // ✅ 체크포인트2
+        if (!cp2Activated && hitRect(CP2_X1, CP2_Y1, CP2_X2, CP2_Y2)) {
+            cp2Activated = true;
+            respawnX = collisionX(rectCenterSpawnX(CP2_X1, CP2_X2));
+            respawnY = collisionY(rectCenterSpawnY(CP2_Y1, CP2_Y2));
+        }
+
+        // ✅ END: "아래 변(y=195) 라인" 느낌을 살리려면,
+        //    유닛이 END 사각형에 닿았는지(간단), 또는 y=END_Y2 근처 라인 접촉으로 더 엄격히 할 수 있음.
+        if (hitRect(END_X1, END_Y1, END_X2, END_Y2)) {
+            finished = true;
+            gameRunning = false; // 루프 종료
+            vx = 0; vy = 0;
+        }
+    }
+
+
     private static BufferedImage loadCollisionMask() {
         String[] candidates = {"/CollusionMask.png", "/collusionMask.png", "/CollisionMask.png"};
         for (String path : candidates) {
@@ -348,6 +395,17 @@ public class GameRoom {
             }
         }
         return false;
+    }
+
+    public long now() { return System.currentTimeMillis(); }
+
+    public long elapsedMs() {
+        if (startedAtMs < 0) return 0;
+        return now() - startedAtMs;
+    }
+
+    public void startTimerIfNeeded() {
+        if (startedAtMs < 0) startedAtMs = now() + 10_000;
     }
 
     public synchronized void stopGameLoop() {
