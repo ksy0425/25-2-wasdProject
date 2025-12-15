@@ -10,9 +10,6 @@ public final class WorldConfig {
     public static final int WORLD_WIDTH = 1400;
     public static final int WORLD_HEIGHT = 800;
 
-    public static final int OBSTACLE_X_FIXED_Y = 400;
-    public static final int OBSTACLE_Y_FIXED_X = 600;
-
     public static final int OBSTACLE_X_MIN = 100;
     public static final int OBSTACLE_X_MAX = 600;
 

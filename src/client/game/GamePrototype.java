@@ -56,8 +56,8 @@ public class GamePrototype extends JComponent {
         int spawnY = (int) Math.round(((674.0 + 782.0) / 2.0) - (Unit.UNIT_SIZE_HEIGHT / 2.0));
         unit = new Unit(spawnX, spawnY);
         //장애물 생성
-        obstacleX = new Obstacle(Color.BLACK, 100, 400);
-        obstacleY = new Obstacle(Color.BLACK, 600, 100);
+        obstacleX = new Obstacle(Color.BLACK, 390, 280);
+        obstacleY = new Obstacle(Color.BLACK, 1120, 210);
 
         setFocusable(true);
         setOpaque(false);

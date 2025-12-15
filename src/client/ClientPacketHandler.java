@@ -78,7 +78,7 @@ public class ClientPacketHandler {
             window.showScreen("main");
         }
         else {
-            window.alert(packet.getReason());
+            JOptionPane.showMessageDialog(window, "해당 닉네임이 이미 존재합니다.", "알림", JOptionPane.WARNING_MESSAGE);
         }
     }
 

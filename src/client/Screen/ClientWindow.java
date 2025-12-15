@@ -1,6 +1,5 @@
 package client.Screen;
 
-import client.Screen.util.PopupPanel;
 import client.network.ConnectionManager;
 
 import javax.swing.*;
@@ -89,13 +88,6 @@ public class ClientWindow extends JFrame {
             setSize(1400, 800);
             setResizable(false);
         }
-    }
-
-    public void alert(String message) {
-        PopupPanel popup = new PopupPanel(message);
-
-        container.add(popup, "popup");
-        cardLayout.show(container, "popup");
     }
 
     private JPanel createScreen(String name) {

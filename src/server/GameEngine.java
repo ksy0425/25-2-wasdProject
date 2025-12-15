@@ -6,8 +6,6 @@ import shared.packet.SyncPacket;
 import static client.game.player.Unit.UNIT_SIZE_WIDTH;
 import static client.game.player.Unit.UNIT_SIZE_HEIGHT;
 import static client.game.obstacle.Obstacle.OBSTACLE_SIZE;
-import static server.WorldConfig.OBSTACLE_X_FIXED_Y;
-import static server.WorldConfig.OBSTACLE_Y_FIXED_X;
 
 public class GameEngine {
 
@@ -17,8 +15,10 @@ public class GameEngine {
     private int vy = 0;
     private int lastDir = MovePacket.DOWN;
 
-    private int obstarcleX_x = 100;
-    private int obstarcleY_y = 100;
+    private int obstarcleX_x = 390;
+    private int obstarcleY_y = 210;
+    private int OBSTACLE_X_FIXED_Y = 280;
+    private int OBSTACLE_Y_FIXED_X = 1120;
     private int oX = 0;
     private int oY = 0;
 
@@ -155,15 +155,15 @@ public class GameEngine {
         int next = obstarcleX_x + oX;
 
         // 오른쪽 끝(600) 닿으면 600에 고정 + 방향 반전(왼쪽으로)
-        if (next >= 600) {
-            obstarcleX_x = 600;
+        if (next >= 960) {
+            obstarcleX_x = 960;
             oX = -1;
             return;
         }
 
         // 왼쪽 끝(100) 닿으면 100에 고정 + 방향 반전(오른쪽으로)
-        if (next <= 100) {
-            obstarcleX_x = 100;
+        if (next <= 390) {
+            obstarcleX_x = 390;
             oX = 1;
             return;
         }
@@ -176,15 +176,15 @@ public class GameEngine {
         int next = obstarcleY_y + oY;
 
         // 아래쪽 끝(OB_MAX_Y) 닿으면 아래로 못 가게 고정 + 위로 반전
-        if (next >= 600) {
-            obstarcleY_y = 600;
+        if (next >= 610) {
+            obstarcleY_y = 610;
             oY = -1;
             return;
         }
 
         // 위쪽 끝(OB_MIN_Y) 닿으면 위로 못 가게 고정 + 아래로 반전
-        if (next <= 100) {
-            obstarcleY_y = 100;
+        if (next <= 210) {
+            obstarcleY_y = 210;
             oY = 1;
             return;
         }
