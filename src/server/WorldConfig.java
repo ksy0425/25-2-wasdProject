@@ -22,11 +22,11 @@ public final class WorldConfig {
     private static final double SPAWN_P2_Y = 782.0;
 
     // 기본 스폰(시작 지점)
-//    public static final int SPAWN_X = (int) Math.round(((SPAWN_P1_X + SPAWN_P2_X) / 2.0) - (UNIT_SIZE_WIDTH / 2.0));
-//    public static final int SPAWN_Y = (int) Math.round(((SPAWN_P1_Y + SPAWN_P2_Y) / 2.0) - (UNIT_SIZE_HEIGHT / 2.0));
+    public static final int SPAWN_X = (int) Math.round(((SPAWN_P1_X + SPAWN_P2_X) / 2.0) - (UNIT_SIZE_WIDTH / 2.0));
+    public static final int SPAWN_Y = (int) Math.round(((SPAWN_P1_Y + SPAWN_P2_Y) / 2.0) - (UNIT_SIZE_HEIGHT / 2.0));
     // Test 스폰(끝 지점)
-    public static final int SPAWN_X = 1211;
-    public static final int SPAWN_Y = 288;
+//    public static final int SPAWN_X = 1211;
+//    public static final int SPAWN_Y = 288;
 
     private static final int CP1_X1 = 369, CP1_Y1 = 27,  CP1_X2 = 494, CP1_Y2 = 139;
     // Test 스폰(체크포인트1 지점)

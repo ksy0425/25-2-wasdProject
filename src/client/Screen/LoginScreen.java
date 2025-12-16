@@ -23,40 +23,60 @@ public class LoginScreen extends JPanel {
     }
 
     private JPanel createCenterPanel() { // 외부 참조
-        JPanel panel = new JPanel();
-        panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
+        JPanel panel = new JPanel(null);
         panel.setOpaque(false);
 
         JLabel title = new JLabel("닉네임을 입력하세요");
         title.setFont(new Font("Serial", Font.BOLD, 24));
-        title.setAlignmentX(Component.CENTER_ALIGNMENT);
 
         nicknameField = new JTextField(15);
-        nicknameField.setMaximumSize(new Dimension(200, 40));
-        nicknameField.setAlignmentX(Component.CENTER_ALIGNMENT);
-        nicknameField.addActionListener(onLoginEndter);
+        nicknameField.addActionListener(onLoginEnter);
 
         JButton btn = new JButton("접속하기");
-        btn.setAlignmentX(Component.CENTER_ALIGNMENT);
-        btn.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                onLoginClicked();
-            }
-        });
+        btn.addActionListener(onLoginEnter);
 
-        panel.add(Box.createVerticalGlue());
         panel.add(title);
-        panel.add(Box.createRigidArea(new Dimension(0, 20)));
         panel.add(nicknameField);
-        panel.add(Box.createRigidArea(new Dimension(0, 30)));
         panel.add(btn);
-        panel.add(Box.createVerticalGlue());
+
+        int pw = panel.getWidth();
+        int ph = panel.getHeight();
+
+        if (pw <= 0 || ph <= 0) {
+            pw = window.getWidth();
+            ph = window.getHeight();
+        }
+
+        if (pw <= 0 || ph <= 0) {
+            pw = 1400;
+            ph = 800;
+        }
+
+        int gap1 = 20;
+        int gap2 = 30;
+
+        Dimension titleSize = title.getPreferredSize();
+        int fieldW = 200, fieldH = 40;
+        Dimension btnSize = btn.getPreferredSize();
+
+        int totalH = titleSize.height + gap1 + fieldH + gap2 + btnSize.height;
+        int startY = (ph - totalH) / 2;
+
+        int y = startY;
+
+        title.setBounds((pw - titleSize.width) / 2, y, titleSize.width, titleSize.height);
+        y += titleSize.height + gap1;
+
+        nicknameField.setBounds((pw - fieldW) / 2, y, fieldW, fieldH);
+        y += fieldH + gap2;
+
+        btn.setBounds((pw - btnSize.width) / 2, y, btnSize.width, btnSize.height);
 
         return panel;
     }
 
-    private ActionListener onLoginEndter = new ActionListener() {
+
+    private ActionListener onLoginEnter = new ActionListener() {
         @Override
         public void actionPerformed(ActionEvent e) {
             onLoginClicked();
