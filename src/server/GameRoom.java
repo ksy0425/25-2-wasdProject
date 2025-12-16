@@ -30,10 +30,12 @@ public class GameRoom {
         host.setCurrentRoom(this);
     }
 
-    public synchronized boolean join(ClientHandler client) {
+    public synchronized boolean join(ClientHandler client, ServerWindow serverWindow) {
         if (players.size() >= MAX_PLAYER) return false;
         players.add(client);
         client.setCurrentRoom(this);
+        serverWindow.printDisplay("[" + roomTitle + "]" + ": " + client.getNickname() + " 입장 (" + players.size() + "/4)");
+
         return true;
     }
 

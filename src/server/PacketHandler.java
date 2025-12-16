@@ -136,7 +136,7 @@ public class PacketHandler {
     private void handleMove(MovePacket packet) {
 //        System.out.println("!!!![SERVER] MovePacket from playerId=" + packet.getPlayerId()
 //                + ", dir=" + packet.getDirection());
-        window.printDisplay("!!!![SERVER] MovePacket from playerId=" + packet.getPlayerId()
+        window.printDisplay("[SERVER] MovePacket from playerId=" + packet.getPlayerId()
                 + ", dir=" + packet.getDirection());
         GameRoom room = client.getCurrentRoom();
         if (room == null) return;

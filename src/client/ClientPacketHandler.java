@@ -179,6 +179,7 @@ public class ClientPacketHandler {
         // 호스트, 클라이언트 시작 버튼 강제 활성화 후  시간 표시
         LobbyScreen lobby = window.getLobbyScreen();
         lobby.startButton.setVisible(true);
+        lobby.startButton.setEnabled(false);
         for (int i=10; i>0; i--) {
             try {
                 Thread.sleep(1000);

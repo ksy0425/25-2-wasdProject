@@ -39,7 +39,6 @@ public class RoomManager {
     public synchronized void removeClient(ClientHandler handler) {
         leaveRoom(handler); // 호스트가 튕겨도 방 정리
 
-        System.out.println("삭제 닉네임 : " + playerNicknames.get(handler.getPlayerId()));
         clients.remove(handler);
         playerNicknames.remove(handler.getPlayerId());
         serverWindow.printDisplay("[RoomManager] 클라이언트 제거: ID=" + handler.getPlayerId());
@@ -60,19 +59,13 @@ public class RoomManager {
         rooms.put(title, room);
 
         serverWindow.printDisplay("[RoomManager] 방 생성: " + title);
-        System.out.println("현재 인원 수 : " + room.getPlayerCount());
         return true;
     }
 
     public synchronized boolean joinRoom(String title, ClientHandler client) {
-
         GameRoom room = rooms.get(title);
-
         if (room == null) return false;
-        // GameRoom에서 찍어야 플레이어 카운트가 정상 출력
-        serverWindow.printDisplay(title + ": " + playerNicknames.get(client.getPlayerId()) + " 입장 (" + room.getPlayerCount() + "/4)");
-
-        return room.join(client);
+        return room.join(client, serverWindow);
     }
 
     public synchronized void leaveRoom(ClientHandler client) {
@@ -80,10 +73,10 @@ public class RoomManager {
 
         if (room != null) {
             room.leave(client);
-            serverWindow.printDisplay("[RoomManager] 방 퇴장: ID=" + client.getPlayerId());
+            serverWindow.printDisplay("[" + room.getRoomTitle() + "]" + " 방 퇴장: ID=" + client.getPlayerId());
             if (room.isHost(client) || room.getPlayerCount() == 0) {
                 removeRoom(room.getRoomTitle());
-                serverWindow.printDisplay("[RoomManager] 방 삭제: Title=" + room.getRoomTitle());
+                serverWindow.printDisplay("[" + room.getRoomTitle() + "]" + " 방 삭제");
             }
         }
     }
