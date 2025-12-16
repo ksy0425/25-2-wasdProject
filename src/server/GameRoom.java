@@ -17,12 +17,11 @@ public class GameRoom {
     private final ServerWindow window;
     private final Vector<ClientHandler> players = new Vector<>();
 
-    // ✅ 게임 엔진(상태/이동/충돌/리스폰/Sync 생성 담당)
     private final GameEngine engine;
 
     private final int MAX_PLAYER = 4;
 
-    private volatile boolean gameRunning = false;
+    private volatile boolean gameRunning = false; // 외부 참조
 
     public GameRoom(String roomTitle, ClientHandler host, ServerWindow window) {
         this.roomTitle = roomTitle;
@@ -77,7 +76,6 @@ public class GameRoom {
     public boolean isHost(ClientHandler client) { return client.equals(host); }
     public Vector<ClientHandler> getPlayers() { return new Vector<>(players); }
 
-    // ✅ MovePacket 처리: GameRoom은 “입력 전달”만
     public synchronized void handleMove(MovePacket packet) {
         engine.applyMove(packet);
     }
@@ -86,7 +84,6 @@ public class GameRoom {
         if (gameRunning) return;
         gameRunning = true;
 
-        // ✅ 기존 동작 유지: 장애물 이동 시작(oX=1,oY=1)
         engine.scheduleStartAfter(10_000);
         engine.start();
 
@@ -103,7 +100,6 @@ public class GameRoom {
         loop.start();
     }
 
-    // ✅ GameRoom은 “한 틱 진행 + SyncPacket 브로드캐스트”만
     private synchronized void stepGame() {
         SyncPacket sync = engine.step();
         broadcast(sync);

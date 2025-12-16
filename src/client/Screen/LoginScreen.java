@@ -1,7 +1,6 @@
 package client.Screen;
 
 import client.network.ClientSender;
-import client.network.ConnectionManager;
 import shared.packet.LoginRequestPacket;
 
 import javax.swing.*;
@@ -23,7 +22,7 @@ public class LoginScreen extends JPanel {
         add(createCenterPanel(), BorderLayout.CENTER);
     }
 
-    private JPanel createCenterPanel() {
+    private JPanel createCenterPanel() { // 외부 참조
         JPanel panel = new JPanel();
         panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
         panel.setOpaque(false);
@@ -39,7 +38,12 @@ public class LoginScreen extends JPanel {
 
         JButton btn = new JButton("접속하기");
         btn.setAlignmentX(Component.CENTER_ALIGNMENT);
-        btn.addActionListener(e -> onLoginClicked());
+        btn.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                onLoginClicked();
+            }
+        });
 
         panel.add(Box.createVerticalGlue());
         panel.add(title);

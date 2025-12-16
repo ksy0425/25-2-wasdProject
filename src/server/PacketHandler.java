@@ -68,7 +68,6 @@ public class PacketHandler {
                 title, hostId, ok, ok ? "" : "이미 존재하는 방 제목입니다."
         ));
 
-        // ★ 방 생성 성공했으면 호스트 포함 전체 RoomInfo 갱신
         if (ok && room != null) {
             room.broadcastRoomInfo();
         }
@@ -79,7 +78,6 @@ public class PacketHandler {
 
         GameRoom room = roomManager.getRoom(title);
         if (room == null) {
-            // 방 없음 → 연결 끊지 말고 실패 응답만 보내기
             client.send(new JoinRoomResponsePacket(title, -1, false, "방이 존재하지 않습니다."));
             return;
         }
@@ -115,7 +113,7 @@ public class PacketHandler {
         keys.add("s");
         keys.add("d");
 
-        Collections.shuffle(keys);
+        Collections.shuffle(keys); // 외부 참조
 
         Map<Integer, String> playersKey = new HashMap<>();
 
@@ -130,19 +128,16 @@ public class PacketHandler {
         if (room != null) {
             room.broadcast(new GameStartResponsePacket(playersKey, true));
             window.printDisplay("[" + room.getRoomTitle() + "]" + " 방 게임 시작!!!");
-            room.startGameLoop();   // ★ 여기서 공유 유닛 게임 루프 시작
+            room.startGameLoop();
         }
     }
 
     private void handleMove(MovePacket packet) {
-//        System.out.println("!!!![SERVER] MovePacket from playerId=" + packet.getPlayerId()
-//                + ", dir=" + packet.getDirection());
         window.printDisplay("[SERVER] MovePacket from playerId=" + packet.getPlayerId()
                 + ", dir=" + packet.getDirection());
         GameRoom room = client.getCurrentRoom();
         if (room == null) return;
 
-        // 단순히 방에 위임하면 됨 (Last Input Wins 논리는 GameRoom에 있음)
         System.out.println("====" + packet.getPlayerId() +", " + packet.getDirection()+"====");
         room.handleMove(packet);
     }

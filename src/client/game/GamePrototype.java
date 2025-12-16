@@ -1,6 +1,5 @@
 package client.game;
 
-import client.Screen.util.GameMapPanel;
 import client.game.obstacle.Obstacle;
 import client.game.player.Unit;
 import client.network.ClientSender;
@@ -21,18 +20,17 @@ import java.util.Map;
 
 public class GamePrototype extends JComponent {
 
-    // SyncPacket에서 접근하기 위한 싱글톤 레퍼런스
     private static GamePrototype instance;
 
     private final Unit unit;
     private Obstacle obstacleX, obstacleY;
     private final int myPlayerId;
-    private final String keyRole; // "w", "a", "s", "d"
+    private final String keyRole;
     private int dir;
-    private volatile long elapsedMs = 0;
+    private volatile long elapsedMs = 0; // 외부 참조
 
-    private final Map<Integer, BufferedImage> unitSprites = new HashMap<>();
-    private final Map<Integer, BufferedImage> obstacles = new HashMap<>();
+    private final Map<Integer, BufferedImage> unitSprites = new HashMap<>(); // 외부 참조
+    private final Map<Integer, BufferedImage> obstacles = new HashMap<>(); // 외부 참조
 
     public GamePrototype() {
         instance = this;
@@ -52,12 +50,10 @@ public class GamePrototype extends JComponent {
             this.keyRole = "";
         }
 
-        // 유닛 초기 위치 (적당히 조정 가능)
-        // 서버 스폰과 동일 계산 (중간점 - half size)
         int spawnX = (int) Math.round(((85.0 + 210.0) / 2.0) - (Unit.UNIT_SIZE_WIDTH / 2.0));
         int spawnY = (int) Math.round(((674.0 + 782.0) / 2.0) - (Unit.UNIT_SIZE_HEIGHT / 2.0));
         unit = new Unit(spawnX, spawnY);
-        //장애물 생성
+
         obstacleX = new Obstacle(Color.BLACK, 390, 280);
         obstacleY = new Obstacle(Color.BLACK, 1120, 210);
         obstacleX.setDirection(Obstacle.RIGHT);
@@ -82,7 +78,7 @@ public class GamePrototype extends JComponent {
         });
     }
 
-    private BufferedImage loadSprite(String path) {
+    private BufferedImage loadSprite(String path) { // 외부 참조
         try {
             return ImageIO.read(getClass().getResource(path));
         } catch (Exception e) {
@@ -107,10 +103,6 @@ public class GamePrototype extends JComponent {
         return instance;
     }
 
-    public void start() {
-        requestFocusInWindow();
-    }
-
     private void handleKeyPressed(KeyEvent e) {
         int code = e.getKeyCode();
 
@@ -124,7 +116,6 @@ public class GamePrototype extends JComponent {
 
         dir = -1;
 
-        // 내게 부여된 키 역할에 따라 어떤 방향 패킷을 보낼지 결정
         switch (keyRole) {
             case "w" -> {
                 System.out.println("[DEBUG] case 'w' 진입, code=" + code);
@@ -161,15 +152,13 @@ public class GamePrototype extends JComponent {
         System.out.println("[DEBUG] dir 계산 결과 = " + dir);
         if (dir != -1) {
             System.out.println("[DEBUG] send MovePacket, dir=" + dir + ", myId=" + myPlayerId);
-            //Unit meUnit = unit.getUnit(); // 너희 구조에 맞게 가져오기 (Map이면 get)
+
             if (unit != null) unit.setFacing(dir);
             ClientSender.send(new MovePacket(myPlayerId, dir));
         }
     }
 
-    // 서버에서 SyncPacket으로 보내준 좌표를 반영
     public void updateUnitState(int x, int y, int dir) {
-        //System.out.println("[GAME] updateUnitPosition: " + x + ", " + y);
         unit.x = x;
         unit.y = y;
         unit.setFacing(dir);
@@ -190,14 +179,10 @@ public class GamePrototype extends JComponent {
         BufferedImage img = unitSprites.getOrDefault(unit.getFacing(), unitSprites.get(Unit.DOWN));
         g.drawImage(img, unit.getX(), unit.getY(), Unit.UNIT_SIZE_WIDTH, Unit.UNIT_SIZE_HEIGHT, null);
 
-        //장애물 이미지 입히기
         img = obstacles.getOrDefault(obstacleX.getDirection(), obstacles.get(Obstacle.RIGHT));
         g.drawImage(img, obstacleX.getX(), obstacleX.getY(), Obstacle.OBSTACLE_SIZE, Obstacle.OBSTACLE_SIZE, null);
         img = obstacles.getOrDefault(obstacleY.getDirection(), obstacles.get(Obstacle.UP_DOWN));
         g.drawImage(img, obstacleY.getX(), obstacleY.getY(), Obstacle.OBSTACLE_SIZE, Obstacle.OBSTACLE_SIZE, null);
-
-        //obstacleX.draw(g);
-        //obstacleY.draw(g);
 
         String text = formatMs(elapsedMs);
 
@@ -208,19 +193,6 @@ public class GamePrototype extends JComponent {
         g.setColor(Color.WHITE);
         g.drawString(text, 18, 30);
         g.dispose();
-    }
-
-    // 필요하다면 외부에서 호출할 stop() (일시 정지는 크게 신경 안써도 된다고 해서 간단히 처리)
-    public void stop() {
-        if (myPlayerId >= 0) {
-            ClientSender.send(new MovePacket(myPlayerId, MovePacket.STOP));
-        }
-    }
-
-    public void addNotify() {
-        super.addNotify();
-        // 화면에 붙는 순간 포커스 시도
-        requestFocusInWindow();
     }
 
     public void updateElapsedMs(long ms) {

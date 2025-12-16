@@ -1,8 +1,6 @@
-// src/shared/model/PlayerState.java
 package shared.model;
 
 import java.io.Serializable;
-import java.util.Objects;
 
 public class PlayerState implements Serializable {
 

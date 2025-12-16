@@ -11,7 +11,7 @@ public class RoomPanel extends JPanel {
 
     public RoomPanel() {
         setOpaque(false);
-        setLayout(new GridLayout(2, 2, 20, 20)); // 2x2 + 간격
+        setLayout(new GridLayout(2, 2, 20, 20));
     }
 
     public void addParticipant(String name, String role) {
@@ -45,9 +45,6 @@ public class RoomPanel extends JPanel {
     private void refreshGrid() {
         removeAll();
 
-//        for (String name : participants) {
-//            add(createParticipantCard(name, role));
-//        }
         for (int i = 0; i < participants.size(); i++) {
             String name = participants.get(i);
             String role = (i < roles.size()) ? roles.get(i) : "";
@@ -70,12 +67,10 @@ public class RoomPanel extends JPanel {
         card.setOpaque(false);
         card.setLayout(new BorderLayout());
 
-        // 바깥 둥근 박스 패널
         RoundedPanel box = new RoundedPanel(20);
-        box.setBackground(new Color(255, 255, 255, 180)); // 반투명 흰 박스
-        box.setLayout(new BorderLayout()); // 세로로 위/아래 나누기 (닉네임 / 정사각형)
+        box.setBackground(new Color(255, 255, 255, 180));
+        box.setLayout(new BorderLayout());
 
-        // ----- 닉네임 영역 (위쪽) -----
         JPanel namePanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 0, 10));
         namePanel.setOpaque(false);
 
@@ -83,29 +78,23 @@ public class RoomPanel extends JPanel {
         label.setFont(new Font("Dialog", Font.BOLD, 18));
         namePanel.add(label);
 
-        // ----- 정사각형 영역 (아래쪽) -----
         JPanel squarePanelWrapper = new JPanel(new FlowLayout(FlowLayout.CENTER, 0, 5));
         squarePanelWrapper.setOpaque(false);
 
-        int size = 100; // 정사각형 한 변 길이
+        int size = 100;
 
-        // 이미지를 가운데에 한 장 넣기 위해 BorderLayout 사용
         JPanel squarePanel = new JPanel(new BorderLayout());
         squarePanel.setPreferredSize(new Dimension(size, size));
-        squarePanel.setBackground(new Color(220, 220, 220)); // 기본 색
+        squarePanel.setBackground(new Color(220, 220, 220));
 
-        // role -> 이미지 경로 매핑
         String imgPath = getRoleImagePath(role);
         if (imgPath != null) {
-            // ImagePanel이 (String path, int width, int height) 생성자를 가진다고 가정
             ImagePanel roleImagePanel = new ImagePanel(imgPath, size, size);
             squarePanel.add(roleImagePanel, BorderLayout.CENTER);
         }
-        // role이 없거나 매핑 안 되면 기본 회색 박스만 보이게 둠
 
         squarePanelWrapper.add(squarePanel);
 
-        // 박스에 위/아래로 배치
         box.add(namePanel, BorderLayout.NORTH);
         box.add(squarePanelWrapper, BorderLayout.CENTER);
 
@@ -126,11 +115,7 @@ public class RoomPanel extends JPanel {
             case "d":
                 return "/D.png";
             default:
-                return null; // 매칭 안 되면 이미지 없음
+                return null;
         }
     }
-
-//    public void setRole(String role) {
-//        this.role = role;
-//    }
 }

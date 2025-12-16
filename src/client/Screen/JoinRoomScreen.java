@@ -9,6 +9,8 @@ import client.Screen.util.SpacerPanel;
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 public class JoinRoomScreen extends JPanel {
     private ClientWindow window;
@@ -55,7 +57,7 @@ public class JoinRoomScreen extends JPanel {
 
         return labelPanel;
     }
-    private JPanel createInputPanel() {
+    private JPanel createInputPanel() { // 외부 참조
         RoundedPanel containerPanel = new RoundedPanel(30);
         containerPanel.setBackground(new Color(255, 255, 255, 220));
         containerPanel.setLayout(new BorderLayout());
@@ -87,7 +89,6 @@ public class JoinRoomScreen extends JPanel {
         JButton b_join = new JButton("참가하기");
         b_join.setFont(new Font("Dialog", Font.BOLD, 40));
         b_join.setBackground(Color.GREEN);
-        //b_join.addActionListener(e -> window.showScreen("host"));
         b_join.addActionListener(new JoinRoomEvent(t_roomTitle, window));
 
         flowCreatePanel.add(b_join);
@@ -108,7 +109,12 @@ public class JoinRoomScreen extends JPanel {
         JButton exitButton = new JButton("   나가기   ");
         exitButton.setFont(new Font("Dialog", Font.BOLD, 40));
         exitButton.setBackground(Color.GREEN);
-        exitButton.addActionListener(e -> window.showScreen("main"));
+        exitButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                window.showScreen("main");
+            }
+        });
         ExitPanel.add(exitButton);
 
         southPanel.add(ExitPanel, BorderLayout.SOUTH);

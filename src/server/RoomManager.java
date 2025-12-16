@@ -8,11 +8,9 @@ import java.util.concurrent.ConcurrentHashMap;
 
 public class RoomManager {
 
-    // 전체 클라이언트 목록
     private final Vector<ClientHandler> clients = new Vector<>();
     private final Map<Integer, String> playerNicknames = new ConcurrentHashMap<>();
 
-    // 전체 방 목록
     private final Map<String, GameRoom> rooms = new ConcurrentHashMap<>();
 
     private ServerWindow serverWindow;
@@ -37,7 +35,7 @@ public class RoomManager {
     }
 
     public synchronized void removeClient(ClientHandler handler) {
-        leaveRoom(handler); // 호스트가 튕겨도 방 정리
+        leaveRoom(handler);
 
         clients.remove(handler);
         playerNicknames.remove(handler.getPlayerId());

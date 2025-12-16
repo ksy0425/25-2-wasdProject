@@ -1,4 +1,3 @@
-// src/client/ClientPacketHandler.java
 package client;
 
 import client.Screen.ClientWindow;
@@ -15,22 +14,14 @@ import javax.swing.*;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-/**
- * 클라이언트에서 서버 응답 패킷을 처리하고,
- * 플레이어 신원 정보(PlayerState)만 관리하는 핸들러.
- */
 public class ClientPacketHandler {
     private ClientWindow window;
 
-    // 나 자신 정보
-    private volatile PlayerState me;
+    private volatile PlayerState me; // 외부 참조
 
-    // 현재 로비/방 등에 존재하는 플레이어들 정보 (나 포함)
     private final Map<Integer, PlayerState> players = new ConcurrentHashMap<>();
 
     public ClientPacketHandler(ClientWindow window) { this.window = window; }
-
-    // -------- 외부에서 조회용 --------
 
     public PlayerState getMe() {
         return me;
@@ -155,16 +146,15 @@ public class ClientPacketHandler {
         Map<Integer, String> playersKey = p.getPlayersKey();
 
         for (Map.Entry<Integer, String> entry : playersKey.entrySet()) {
-            Integer playerId = entry.getKey();   // 서버에서 내려준 playerId
-            String keyRole = entry.getValue();   // ex) "W", "A", "S", "D"
+            Integer playerId = entry.getKey();
+            String keyRole = entry.getValue();
 
             System.out.println("[DEBUG] GameStart: playerId=" + playerId + ", keyRole='" + keyRole + "'");
 
-            PlayerState ps = players.get(playerId);  // players 맵에서 찾기
+            PlayerState ps = players.get(playerId);
             if (ps != null) {
-                ps.setKeyRole(keyRole);          // players 쪽 객체에 키 역할 세팅
+                ps.setKeyRole(keyRole);
 
-                // ★ me도 같이 업데이트 (같은 사람이면)
                 if (me != null && me.getPlayerId() == playerId) {
                     me.setKeyRole(keyRole);
                     System.out.println("[DEBUG] me 업데이트: id=" + me.getPlayerId()
@@ -176,7 +166,6 @@ public class ClientPacketHandler {
         }
         window.showScreen("lobby");
 
-        // 호스트, 클라이언트 시작 버튼 강제 활성화 후  시간 표시
         LobbyScreen lobby = window.getLobbyScreen();
         lobby.startButton.setVisible(true);
         lobby.startButton.setEnabled(false);
@@ -198,9 +187,7 @@ public class ClientPacketHandler {
             gp.updateUnitState(packet.getX(), packet.getY(), packet.getDir());
             gp.updateObstarclePosition(packet.getOx(), packet.getOy());
         }
-        //String t = formatMs(packet.getElapsedMs());
         gp.updateElapsedMs(packet.getElapsedMs());
-        //System.out.println("====" + packet.getX() + ", " + packet.getY()+"====");
 
         if (packet.getIsFinished()) {
             JOptionPane.showMessageDialog(window,
@@ -208,7 +195,7 @@ public class ClientPacketHandler {
                     "CLEAR!",
                     JOptionPane.INFORMATION_MESSAGE
             );
-            window.showScreen("lobby"); // 원하는 화면으로
+            window.showScreen("lobby");
         }
     }
     private String formatMs(long ms) {
@@ -220,6 +207,5 @@ public class ClientPacketHandler {
 
     public void onDisconnected() {
         System.out.println("[CLIENT] 서버와의 연결이 끊어졌습니다.");
-        // TODO: 팝업 띄우고 로그인 화면으로 되돌리기 등
     }
 }

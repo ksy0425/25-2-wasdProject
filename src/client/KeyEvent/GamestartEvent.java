@@ -1,8 +1,6 @@
 package client.KeyEvent;
 
 import client.network.ClientSender;
-import client.network.ConnectionManager;
-import server.ClientHandler;
 import shared.model.PlayerState;
 import shared.packet.GameStartRequestPacket;
 

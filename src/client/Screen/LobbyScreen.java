@@ -70,7 +70,7 @@ public class LobbyScreen extends JPanel {
         return titlePanel;
     }
 
-    private JPanel createRoomCard() {
+    private JPanel createRoomCard() { // 외부 참조
         RoundedPanel roomCard = new RoundedPanel(30);
         roomCard.setBackground(new Color(255, 255, 255, 220));
         roomCard.setLayout(new BorderLayout());
@@ -94,7 +94,6 @@ public class LobbyScreen extends JPanel {
         JButton exitButton = new JButton("   나가기   ");
         exitButton.setFont(new Font("Dialog", Font.BOLD, 40));
         exitButton.setBackground(Color.GREEN);
-        //exitButton.addActionListener(e -> window.showScreen("main"));
         exitButton.addActionListener(new LeaveRoomEvent(window));
         leftPanel.add(exitButton);
 
@@ -113,7 +112,7 @@ public class LobbyScreen extends JPanel {
         else {
             startButton.setVisible(false);
         }
-//        startButton.setText(isHost() ? "시작하기" : "준비하기");
+
         startButton.setFont(new Font("Dialog", Font.BOLD, 40));
         startButton.setBackground(Color.GREEN);
         rightPanel.add(startButton);

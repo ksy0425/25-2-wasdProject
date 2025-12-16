@@ -81,10 +81,9 @@ public class ClientWindow extends JFrame {
         container.repaint();
 
         if ("game".equals(name)) {
-            pack();                 // preferredSize 반영
-            setResizable(false);    // 맵/좌표계 고정
+            pack();
+            setResizable(false);
         } else {
-            // 게임 아닌 화면은 기존 고정 사이즈로
             setSize(1400, 800);
             setResizable(false);
         }
@@ -108,13 +107,6 @@ public class ClientWindow extends JFrame {
                 return gameScreen;
             default:
                 throw new IllegalArgumentException("Unknown screen: " + name);
-        }
-    }
-
-    // 추가: 방 참가자 목록을 다시 그리도록 HostScreen에 요청하는 헬퍼
-    public void refreshRoomView() {
-        if (lobbyScreen != null) {
-            lobbyScreen.refreshParticipants();
         }
     }
 

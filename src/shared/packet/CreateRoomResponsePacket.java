@@ -2,8 +2,8 @@ package shared.packet;
 
 public class CreateRoomResponsePacket extends Packet {
     private String roomTitle;
-    private boolean accepted;  // true=승인, false=거부
-    private String reason;     // 거부 사유
+    private boolean accepted;
+    private String reason;
     private int hostId;
 
     public CreateRoomResponsePacket(String roomTitle, int hostId, boolean accepted, String reason) {

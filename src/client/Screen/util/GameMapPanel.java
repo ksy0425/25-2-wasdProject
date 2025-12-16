@@ -14,7 +14,6 @@ public class GameMapPanel extends JPanel {
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
 
-        // 프레임 크기에 맞게 배경 채우기
         g.drawImage(gameMap, 0, 0, this);
     }
 }
