@@ -14,27 +14,30 @@ public class GameRoom {
 
     private final String roomTitle;
     private final ClientHandler host;
+    private final ServerWindow window;
     private final Vector<ClientHandler> players = new Vector<>();
+
+    // ✅ 게임 엔진(상태/이동/충돌/리스폰/Sync 생성 담당)
+    private final GameEngine engine;
 
     private final int MAX_PLAYER = 4;
 
-    // ✅ 게임 엔진(상태/이동/충돌/리스폰/Sync 생성 담당)
-    private final GameEngine engine = new GameEngine();
-
     private volatile boolean gameRunning = false;
 
-    public GameRoom(String roomTitle, ClientHandler host) {
+    public GameRoom(String roomTitle, ClientHandler host, ServerWindow window) {
         this.roomTitle = roomTitle;
         this.host = host;
+        this.window = window;
         players.add(host);
         host.setCurrentRoom(this);
+        engine = new GameEngine(window, roomTitle);
     }
 
-    public synchronized boolean join(ClientHandler client, ServerWindow serverWindow) {
+    public synchronized boolean join(ClientHandler client) {
         if (players.size() >= MAX_PLAYER) return false;
         players.add(client);
         client.setCurrentRoom(this);
-        serverWindow.printDisplay("[" + roomTitle + "]" + ": " + client.getNickname() + " 입장 (" + players.size() + "/4)");
+        window.printDisplay("[" + roomTitle + "]" + ": " + client.getNickname() + " 입장 (" + players.size() + "/4)");
 
         return true;
     }

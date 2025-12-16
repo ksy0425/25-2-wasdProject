@@ -37,6 +37,14 @@ public class GameEngine {
     private int respawnX = WorldConfig.SPAWN_X;
     private int respawnY = WorldConfig.SPAWN_Y;
 
+    private ServerWindow window;
+    private String roomTitle;
+
+    public GameEngine(ServerWindow window, String roomTitle) {
+        this.window = window;
+        this.roomTitle = roomTitle;
+    }
+
     private long now() { return System.currentTimeMillis(); }
 
     private long elapsedMsRaw() {
@@ -230,6 +238,7 @@ public class GameEngine {
         vx = 0;
         vy = 0;
         lastDir = MovePacket.DOWN;
+        window.printDisplay("[" + roomTitle + "]" + " 방 Unit is respawned!!!");
     }
 
     private boolean intersects(int ax, int ay, int aw, int ah,

@@ -54,7 +54,7 @@ public class RoomManager {
 
         if (rooms.containsKey(title)) return false;
 
-        GameRoom room = new GameRoom(title, host);
+        GameRoom room = new GameRoom(title, host, serverWindow);
 
         rooms.put(title, room);
 
@@ -65,7 +65,7 @@ public class RoomManager {
     public synchronized boolean joinRoom(String title, ClientHandler client) {
         GameRoom room = rooms.get(title);
         if (room == null) return false;
-        return room.join(client, serverWindow);
+        return room.join(client);
     }
 
     public synchronized void leaveRoom(ClientHandler client) {

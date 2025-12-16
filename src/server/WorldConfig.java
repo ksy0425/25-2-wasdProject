@@ -23,10 +23,10 @@ public final class WorldConfig {
     private static final double SPAWN_P2_Y = 782.0;
 
     // ✅ 기본 스폰(시작 지점) — 너가 쓰던 값 유지
-    public static final int SPAWN_X = (int) Math.round(((SPAWN_P1_X + SPAWN_P2_X) / 2.0) - (UNIT_SIZE_WIDTH / 2.0));
-    public static final int SPAWN_Y = (int) Math.round(((SPAWN_P1_Y + SPAWN_P2_Y) / 2.0) - (UNIT_SIZE_HEIGHT / 2.0));
-    //public static final int SPAWN_X = 1211;
-    //public static final int SPAWN_Y = 288;
+//    public static final int SPAWN_X = (int) Math.round(((SPAWN_P1_X + SPAWN_P2_X) / 2.0) - (UNIT_SIZE_WIDTH / 2.0));
+//    public static final int SPAWN_Y = (int) Math.round(((SPAWN_P1_Y + SPAWN_P2_Y) / 2.0) - (UNIT_SIZE_HEIGHT / 2.0));
+    public static final int SPAWN_X = 1211;
+    public static final int SPAWN_Y = 288;
 
     // ✅ 체크포인트/엔드 사각형 (좌상단(x1,y1) ~ 우하단(x2,y2))
     private static final int CP1_X1 = 369, CP1_Y1 = 27,  CP1_X2 = 494, CP1_Y2 = 139;
