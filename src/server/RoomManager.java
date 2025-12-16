@@ -85,7 +85,7 @@ public class RoomManager {
         GameRoom room = rooms.get(roomTitle);
         if (room == null) return;
 
-        room.stopGameLoop();
+        room.stopGameLoop(0);
 
         Vector<ClientHandler> playerCopy = room.getPlayers();
 

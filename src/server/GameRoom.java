@@ -109,11 +109,18 @@ public class GameRoom {
         broadcast(sync);
 
         if (sync.getIsFinished()) {
-            stopGameLoop();
+            stopGameLoop(sync.getElapsedMs());
         }
     }
 
-    public synchronized void stopGameLoop() {
+    public synchronized void stopGameLoop(long clearTime) {
+        long minutes = clearTime / 60_000;
+        long seconds = (clearTime % 60_000) / 1_000;
+        long millis  = clearTime % 1_000;
+
+        String formatted = String.format("%02d.%02d.%03d", minutes, seconds, millis);
+
+        window.printDisplay(String.format("[%s] 방 게임이 종료됨. 기록:%s", roomTitle, formatted));
         gameRunning = false;
     }
 }
