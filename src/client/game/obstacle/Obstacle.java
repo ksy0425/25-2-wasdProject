@@ -6,33 +6,41 @@ public class Obstacle {
     public static final int OBSTACLE_SIZE=40;
     private static final int MOVE_DISTANCE = 1;
     private Color color;
-    public int x, y;
+    private int x, y;
     private int preX, preY;
-    public static final int xDistance = 1, yDistance = 2;
-    private int xDirection, yDirection;
+    public static final int LEFT = 1, RIGHT = 2, UP_DOWN = 3;
+    private int direction = RIGHT;
 
     public Obstacle(Color color, int x, int y) {
         this.color = color;
         this.x = x;
         this.y = y;
-        this.xDirection = 0;
-        this.yDirection = 0;
+        this.direction = 0;
     }
 
-    public void startMoving(int direction) {
-        if (direction == xDistance) {
-            xDirection = -1;
-            yDirection = 0;
-        } if (direction == yDistance) {
-            xDirection = 0;
-            yDirection = -1;
-        }
+    public int getDirection() {
+        return direction;
     }
 
-    public void draw(Graphics g) {
-        g.setColor(color);
-        g.fillRect(x, y, OBSTACLE_SIZE, OBSTACLE_SIZE);
+    public void setDirection(int dir) {
+        this.direction = dir;
     }
+
+
+//    public void startMoving(int direction) {
+//        if (direction == xDistance) {
+//            xDirection = -1;
+//            yDirection = 0;
+//        } if (direction == yDistance) {
+//            xDirection = 0;
+//            yDirection = -1;
+//        }
+//    }
+
+//    public void draw(Graphics g) {
+//        g.setColor(color);
+//        g.fillRect(x, y, OBSTACLE_SIZE, OBSTACLE_SIZE);
+//    }
 
 //    public void move() {
 //        this.preX = x;
@@ -46,7 +54,18 @@ public class Obstacle {
         return this.x;
     }
 
+    public void setX(int x) {
+        if (x > this.x) direction = RIGHT;
+        else if (x < this.x) direction = LEFT;
+        this.x = x;
+    }
+
     public int getY() {
         return this.y;
+    }
+
+    public void setY(int y) {
+        if (y != this.y) direction = UP_DOWN;
+        this.y = y;
     }
 }

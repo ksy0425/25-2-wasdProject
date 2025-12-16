@@ -32,11 +32,13 @@ public class GamePrototype extends JComponent {
     private volatile long elapsedMs = 0;
 
     private final Map<Integer, BufferedImage> unitSprites = new HashMap<>();
+    private final Map<Integer, BufferedImage> obstacles = new HashMap<>();
 
     public GamePrototype() {
         instance = this;
 
         loadUnitSprites();
+        loadObstacleSprites();
 
         PlayerState me = ConnectionManager.getHandler().getMe();
         if (me != null) {
@@ -58,6 +60,8 @@ public class GamePrototype extends JComponent {
         //장애물 생성
         obstacleX = new Obstacle(Color.BLACK, 390, 280);
         obstacleY = new Obstacle(Color.BLACK, 1120, 210);
+        obstacleX.setDirection(Obstacle.RIGHT);
+        obstacleY.setDirection(Obstacle.UP_DOWN);
 
         setFocusable(true);
         setOpaque(false);
@@ -86,11 +90,17 @@ public class GamePrototype extends JComponent {
         }
     }
 
-    private void loadUnitSprites() {
+    public void loadUnitSprites() {
         unitSprites.put(Unit.UP,    loadSprite("/up.png"));
         unitSprites.put(Unit.DOWN,  loadSprite("/down.png"));
         unitSprites.put(Unit.LEFT,  loadSprite("/left.png"));
         unitSprites.put(Unit.RIGHT, loadSprite("/right.png"));
+    }
+
+    public void loadObstacleSprites() {
+        obstacles.put(Obstacle.LEFT, loadSprite("/Left_Eagle.png"));
+        obstacles.put(Obstacle.RIGHT, loadSprite("/Right_Eagle.png"));
+        obstacles.put(Obstacle.UP_DOWN, loadSprite("/Up_Down_Eagle.png"));
     }
 
     public static GamePrototype getInstance() {
@@ -167,8 +177,8 @@ public class GamePrototype extends JComponent {
     }
 
     public void updateObstarclePosition(int x, int y) {
-        obstacleX.x = x;
-        obstacleY.y = y;
+        obstacleX.setX(x);
+        obstacleY.setY(y);
         repaint();
     }
 
@@ -180,8 +190,14 @@ public class GamePrototype extends JComponent {
         BufferedImage img = unitSprites.getOrDefault(unit.getFacing(), unitSprites.get(Unit.DOWN));
         g.drawImage(img, unit.getX(), unit.getY(), Unit.UNIT_SIZE_WIDTH, Unit.UNIT_SIZE_HEIGHT, null);
 
-        obstacleX.draw(g);
-        obstacleY.draw(g);
+        //장애물 이미지 입히기
+        img = obstacles.getOrDefault(obstacleX.getDirection(), obstacles.get(Obstacle.RIGHT));
+        g.drawImage(img, obstacleX.getX(), obstacleX.getY(), Obstacle.OBSTACLE_SIZE, Obstacle.OBSTACLE_SIZE, null);
+        img = obstacles.getOrDefault(obstacleY.getDirection(), obstacles.get(Obstacle.UP_DOWN));
+        g.drawImage(img, obstacleY.getX(), obstacleY.getY(), Obstacle.OBSTACLE_SIZE, Obstacle.OBSTACLE_SIZE, null);
+
+        //obstacleX.draw(g);
+        //obstacleY.draw(g);
 
         String text = formatMs(elapsedMs);
 
