@@ -28,10 +28,10 @@ public class ClientWindow extends JFrame {
         BufferedReader br = null;
 
         String jarPath = "server.txt";
-        String testPath = "src/resources/server.txt";
+        //String testPath = "src/resources/server.txt";
 
         try {
-            fr = new FileReader(testPath);
+            fr = new FileReader(jarPath);
             br = new BufferedReader(fr);
             serverAddress = br.readLine();
             serverPort = Integer.parseInt(br.readLine());
