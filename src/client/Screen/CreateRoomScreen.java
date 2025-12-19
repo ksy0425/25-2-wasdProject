@@ -22,7 +22,7 @@ public class CreateRoomScreen extends JPanel {
     private JTextField t_roomTitle;
 
     // 추가 구현
-    Vector<String> roomListModel = new Vector<>();
+    private DefaultListModel<String> roomListModel = new DefaultListModel<>();
     private JList<String> roomList = new JList<>(roomListModel);
 
     public CreateRoomScreen(ClientWindow window) {
