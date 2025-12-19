@@ -9,8 +9,9 @@ import shared.model.PlayerState;
 import shared.packet.*;
 import client.game.GamePrototype;
 
-
 import javax.swing.*;
+import java.util.Collections;
+import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -20,6 +21,14 @@ public class ClientPacketHandler {
     private volatile PlayerState me; // 외부 참조
 
     private final Map<Integer, PlayerState> players = new ConcurrentHashMap<>();
+
+    // 추가 구현
+    private volatile Map<String, Integer> roomList = Collections.emptyMap();
+    public Map<String, Integer> getRoomList() {
+        return roomList;
+    }
+    private volatile long roomListVersion = 0;
+    public long getRoomListVersion() { return roomListVersion; }
 
     public ClientPacketHandler(ClientWindow window) { this.window = window; }
 
@@ -48,6 +57,8 @@ public class ClientPacketHandler {
             handleGameStart(p);
         } else if (packet instanceof SyncPacket p) {
             handleSync(p);
+        } else if (packet instanceof RoomListResponsePacket p) { // 추가 구현
+            handleRoomListResponse(p);
         } else {
             System.out.println("[CLIENT] 알 수 없는 패킷 수신: " + packet.getClass().getSimpleName());
         }
@@ -198,6 +209,20 @@ public class ClientPacketHandler {
             window.showScreen("lobby");
         }
     }
+
+    // 추가 구현
+    private void handleRoomListResponse(RoomListResponsePacket packet) {
+        Map<String, Integer> next = new LinkedHashMap<>(packet.getRooms());
+        if (next.equals(this.roomList))
+            return;
+        this.roomList = next;
+        this.roomListVersion++;
+        System.out.println("[CLIENT] 방 목록 수신:");
+        for (Map.Entry<String, Integer> e : roomList.entrySet()) {
+            System.out.println(" - " + e.getKey() + " (" + e.getValue() + "/4)");
+        }
+    }
+
     private String formatMs(long ms) {
         long m = ms / 60000;
         long s = (ms % 60000) / 1000;

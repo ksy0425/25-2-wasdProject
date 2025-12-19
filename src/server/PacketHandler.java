@@ -24,18 +24,17 @@ public class PacketHandler {
             handleLogin(p);
         } else if (packet instanceof CreateRoomRequestPacket p) {
             handleCreateRoom(p);
-
         } else if (packet instanceof JoinRoomRequestPacket p) {
             handleJoinRoom(p);
-
         } else if (packet instanceof LeaveRoomPacket p) {
             handleLeaveRoom(p);
-
         } else if (packet instanceof  GameStartRequestPacket p) {
             handleGameStart(p);
         } else if (packet instanceof MovePacket p) {
             System.out.println("[SERVER] instanceof MovePacket 통과!");
             handleMove(p);
+        } else if (packet instanceof RoomListRequestPacket p) { // 추가 구현
+            handleRoomList(p);
         } else {
             window.printDisplay("알 수 없는 패킷: " + packet.getClass().getSimpleName());
         }
@@ -140,5 +139,16 @@ public class PacketHandler {
 
         System.out.println("====" + packet.getPlayerId() +", " + packet.getDirection()+"====");
         room.handleMove(packet);
+    }
+
+    // 추가 구현
+    private void handleRoomList(RoomListRequestPacket packet) {
+        Map<String, Integer> snapshot = new LinkedHashMap<>();
+
+        for (GameRoom room : roomManager.getRooms().values()) {
+            snapshot.put(room.getRoomTitle(), room.getPlayerCount());
+        }
+
+        client.send(new RoomListResponsePacket(snapshot));
     }
 }

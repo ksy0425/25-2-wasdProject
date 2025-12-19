@@ -1,9 +1,6 @@
 package server;
 
-import shared.packet.Packet;
-
-import java.util.Map;
-import java.util.Vector;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class RoomManager {
@@ -40,12 +37,6 @@ public class RoomManager {
         clients.remove(handler);
         playerNicknames.remove(handler.getPlayerId());
         serverWindow.printDisplay("[RoomManager] 클라이언트 제거: ID=" + handler.getPlayerId());
-    }
-
-    public synchronized void broadcastLobby(Packet packet) {
-        for (ClientHandler c : clients) {
-            c.send(packet);
-        }
     }
 
     public synchronized boolean createRoom(String title, ClientHandler host) {
@@ -94,8 +85,12 @@ public class RoomManager {
         rooms.remove(roomTitle);
     }
 
-
     public GameRoom getRoom(String title) {
         return rooms.get(title);
+    }
+
+    // 추가 구현
+    public Map<String, GameRoom> getRooms() {
+        return rooms;
     }
 }
