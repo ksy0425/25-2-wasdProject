@@ -22,8 +22,8 @@ public class JoinRoomScreen extends JPanel {
     private JTextField t_roomTitle;
 
     // 추가 구현
-    private DefaultListModel<String> roomListModel = new DefaultListModel<>();
-    private JList<String> roomList = new JList<>(roomListModel);
+    private Vector<String> roomVector = new Vector<>();
+    private JList<String> roomList = new JList<>(roomVector);
 
     public JoinRoomScreen(ClientWindow window) {
         this.window = window;
@@ -147,7 +147,7 @@ public class JoinRoomScreen extends JPanel {
                 if (e.getClickCount() == 2) {
                     String selected = roomList.getSelectedValue();
                     if (selected != null) {
-                        String titleOnly = selected.split("\\s*\\(")[0];
+                        String titleOnly = selected.split("\\(")[0].trim();
                         t_roomTitle.setText(titleOnly);
                     }
                 }
@@ -161,16 +161,15 @@ public class JoinRoomScreen extends JPanel {
         ClientSender.send(new RoomListRequestPacket());
     }
     public void updateRoomList(Map<String, Integer> rooms) {
-        roomListModel.clear();
-
+        roomVector.clear();
         if (rooms == null || rooms.isEmpty()) {
-            roomListModel.addElement("(현재 생성된 방이 없습니다)");
+            roomVector.addElement("(현재 생성된 방이 없습니다)");
             return;
         }
-
-        for (var e : rooms.entrySet()) {
-            roomListModel.addElement(e.getKey() + "                                   (" + e.getValue() + "/4)");
+        for (Map.Entry<String, Integer> entry : rooms.entrySet()) {
+            roomVector.add(entry.getKey() + "                                   (" + entry.getValue() + "/4)");
         }
+        roomList.setListData(roomVector);
     }
 
 

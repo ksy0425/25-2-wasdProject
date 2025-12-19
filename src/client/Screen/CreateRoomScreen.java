@@ -22,8 +22,8 @@ public class CreateRoomScreen extends JPanel {
     private JTextField t_roomTitle;
 
     // 추가 구현
-    private DefaultListModel<String> roomListModel = new DefaultListModel<>();
-    private JList<String> roomList = new JList<>(roomListModel);
+    private Vector<String> roomVector = new Vector<>();
+    private JList<String> roomList = new JList<>(roomVector);
 
     public CreateRoomScreen(ClientWindow window) {
         this.window = window;
@@ -148,18 +148,15 @@ public class CreateRoomScreen extends JPanel {
         ClientSender.send(new RoomListRequestPacket());
     }
     public void updateRoomList(Map<String, Integer> rooms) {
-        roomListModel.clear();
-
+        roomVector.clear();
         if (rooms == null || rooms.isEmpty()) {
-            roomListModel.addElement("(현재 생성된 방이 없습니다)");
+            roomVector.addElement("(현재 생성된 방이 없습니다)");
             return;
         }
-
-        for (Map.Entry<String, Integer> e : rooms.entrySet()) {
-            String title = e.getKey();
-            int count = e.getValue();
-            roomListModel.addElement(e.getKey() + "                                   (" + e.getValue() + "/4)");
+        for (Map.Entry<String, Integer> entry : rooms.entrySet()) {
+            roomVector.add(entry.getKey() + "                                   (" + entry.getValue() + "/4)");
         }
+        roomList.setListData(roomVector);
     }
 
 
