@@ -1,42 +1,37 @@
 package client.game.player;
 
 import java.awt.Color;
-import java.awt.Graphics;
 
 public class Unit {
 
-    private int UNIT_SIZE = 40;
-    private int MOVE_DISTANCE = 5;
-
+    public static final int UNIT_SIZE_WIDTH=30;
+    public static final int UNIT_SIZE_HEIGHT=40;
     private Color color;
     public int x, y;
+    public static final int LEFT = 1, RIGHT = 2, UP = 3, DOWN = 4;
+    private int xDirection, yDirection;
+    private int facing = DOWN;
 
-    public boolean isMovingTop, isMovingBottom, isMovingLeft, isMovingRight;
-
-    public Unit(Color color, int x, int y) {
+    public Unit (int x, int y) {
         this.color = color;
         this.x = x;
         this.y = y;
+        this.xDirection = 0;
+        this.yDirection = 0;
     }
 
-    public void draw(Graphics g) {
-        g.setColor(color);
-        g.fillRect(x, y, UNIT_SIZE, UNIT_SIZE);
+    public int getX() {
+        return this.x;
     }
 
-    public void move() {
-
-        if (isMovingLeft)  x -= MOVE_DISTANCE;
-        if (isMovingRight) x += MOVE_DISTANCE;
-        if (isMovingTop)   y -= MOVE_DISTANCE;
-        if (isMovingBottom)y += MOVE_DISTANCE;
-
-        // 경계 체크
-        if (x < 0) x = 0;
-        if (y < 0) y = 0;
-        int maxX = 800 - UNIT_SIZE;
-        int maxY = 600 - UNIT_SIZE;
-        if (x > maxX) x = maxX;
-        if (y > maxY) y = maxY;
+    public int getY() {
+        return this.y;
     }
+
+    public Unit getUnit() { return this; }
+
+    public int getFacing() { return facing; }
+
+    public void setFacing(int dir) { this.facing = dir; }
+
 }

@@ -2,9 +2,7 @@ package client.KeyEvent;
 
 import client.Screen.ClientWindow;
 import client.network.ClientSender;
-import server.ClientHandler;
-import shared.model.PlayerState;
-import shared.packet.JoinRoomRequestPacket;
+import client.network.ConnectionManager;
 import shared.packet.LeaveRoomPacket;
 
 import java.awt.event.ActionEvent;
@@ -18,7 +16,14 @@ public class LeaveRoomEvent implements ActionListener {
     }
     @Override
     public void actionPerformed(ActionEvent e) {
+
         ClientSender.send(new LeaveRoomPacket());
+
+        var handler = ConnectionManager.getHandler();
+        if (handler != null && handler.getPlayers() != null) {
+            handler.getPlayers().clear();
+        }
+
         window.showScreen("main");
     }
 }

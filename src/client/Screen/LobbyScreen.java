@@ -1,24 +1,32 @@
 package client.Screen;
 
+import client.ClientPacketHandler;
+import client.KeyEvent.GamestartEvent;
 import client.KeyEvent.LeaveRoomEvent;
 import client.Screen.util.BackgroundPanel;
 import client.Screen.util.RoomPanel;
 import client.Screen.util.RoundedPanel;
 import client.Screen.util.SpacerPanel;
+import client.network.ConnectionManager;
+import shared.model.PlayerState;
 
 import javax.swing.*;
 import java.awt.*;
 
-public class HostScreen extends JPanel {
+public class LobbyScreen extends JPanel {
 
     private ClientWindow window;
-    private JButton b_back;
+    public JButton startButton, b_back;
     private String title;
+    private int hostId;
+    private ClientPacketHandler handler;
+    private RoomPanel roomPanel;
 
-    public HostScreen(ClientWindow window) {
+    public LobbyScreen(ClientWindow window) {
         this.window = window;
         this.title = window.getRoomTitle();
-        System.out.println("title : " + title);
+        this.hostId = window.getHostId();
+        this.handler = ConnectionManager.getHandler();
 
         setLayout(new BorderLayout());
         setOpaque(false);
@@ -62,7 +70,7 @@ public class HostScreen extends JPanel {
         return titlePanel;
     }
 
-    private JPanel createRoomCard() {
+    private JPanel createRoomCard() { // 외부 참조
         RoundedPanel roomCard = new RoundedPanel(30);
         roomCard.setBackground(new Color(255, 255, 255, 220));
         roomCard.setLayout(new BorderLayout());
@@ -86,13 +94,25 @@ public class HostScreen extends JPanel {
         JButton exitButton = new JButton("   나가기   ");
         exitButton.setFont(new Font("Dialog", Font.BOLD, 40));
         exitButton.setBackground(Color.GREEN);
-        //exitButton.addActionListener(e -> window.showScreen("main"));
         exitButton.addActionListener(new LeaveRoomEvent(window));
         leftPanel.add(exitButton);
 
         JPanel rightPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
         rightPanel.setOpaque(false);
-        JButton startButton = new JButton("시작하기");
+        startButton = new JButton();
+        if(isHost()) {
+            startButton.setVisible(true);
+            startButton.setText("시작하기");
+            if (handler != null) {
+                startButton.addActionListener(
+                        new GamestartEvent(title, handler.getPlayers().values())
+                );
+            }
+        }
+        else {
+            startButton.setVisible(false);
+        }
+
         startButton.setFont(new Font("Dialog", Font.BOLD, 40));
         startButton.setBackground(Color.GREEN);
         rightPanel.add(startButton);
@@ -106,11 +126,30 @@ public class HostScreen extends JPanel {
     }
 
     private JPanel createRoomPanel() {
-        RoomPanel roomPanel = new RoomPanel();
+        roomPanel = new RoomPanel();
         roomPanel.setOpaque(false);
-        roomPanel.addParticipant("Player1");
-        roomPanel.addParticipant("Player2");
+
+        refreshParticipants();
 
         return roomPanel;
+    }
+
+    public void refreshParticipants() {
+        if (roomPanel == null) {
+            return;
+        }
+
+        if (handler == null) return;
+
+        roomPanel.clearParticipants();
+
+        for (PlayerState ps : handler.getPlayers().values()) {
+            roomPanel.addParticipant(ps.getNickname(), ps.getKeyRole());
+        }
+    }
+    public RoomPanel getRoomPanel() { return roomPanel; }
+
+    public boolean isHost() {
+        return handler.getMe().getPlayerId() == hostId;
     }
 }

@@ -10,14 +10,12 @@ public class ExitEvent implements ActionListener {
     @Override
     public void actionPerformed(ActionEvent e) {
         try {
-            // 스트림 닫기
             if (ConnectionManager.out != null) {
                 ConnectionManager.out.close();
             }
             if (ConnectionManager.in != null) {
                 ConnectionManager.in.close();
             }
-            // 소켓 닫기
             if (ConnectionManager.socket != null && !ConnectionManager.socket.isClosed()) {
                 ConnectionManager.socket.close();
             }

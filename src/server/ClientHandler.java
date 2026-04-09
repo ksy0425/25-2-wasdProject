@@ -17,6 +17,7 @@ public class ClientHandler extends Thread {
     private ObjectOutputStream out;
     private String nickname;
     private int playerId;
+    private GameRoom currentRoom;
 
     public ClientHandler(Socket socket, RoomManager roomManager, ServerWindow window) {
         this.socket = socket;
@@ -33,16 +34,12 @@ public class ClientHandler extends Thread {
             PacketHandler handler = new PacketHandler(this, roomManager, window);
 
             Packet first = (Packet) in.readObject();
-            if (!(first instanceof LoginRequestPacket login)) {
+            if (!(first instanceof LoginRequestPacket)) {
                 window.printDisplay("잘못된 최초 패킷 수신. 접속 종료.");
                 socket.close();
                 return;
             }
 
-            nickname = login.getNickname();
-            this.playerId = roomManager.addClient(this, nickname);
-
-            window.printDisplay("플레이어 접속: ID=" + playerId + ", 닉네임=" + nickname);
             handler.handle(first);
 
             while (true) {
@@ -59,10 +56,12 @@ public class ClientHandler extends Thread {
         }
     }
 
-    public int getPlayerId() {
-        return playerId;
-    }
+    public void setPlayerId(int playerId) { this.playerId = playerId; }
+    public void setNickname(String nickname) { this.nickname = nickname; }
+    public int getPlayerId() { return playerId; }
     public String getNickname() { return nickname; }
+    public synchronized GameRoom getCurrentRoom() { return currentRoom; }
+    public synchronized void setCurrentRoom(GameRoom room) { this.currentRoom = room; }
 
     public void send(Packet packet) {
         try {

@@ -5,15 +5,25 @@ import client.KeyEvent.InputRoomEvent;
 import client.Screen.util.BackgroundPanel;
 import client.Screen.util.RoundedPanel;
 import client.Screen.util.SpacerPanel;
-import server.ClientHandler;
+import client.network.ClientSender;
+import client.network.ConnectionManager;
+import shared.packet.RoomListRequestPacket;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.util.Map;
+import java.util.Vector;
 
 public class CreateRoomScreen extends JPanel {
     private ClientWindow window;
     private JTextField t_roomTitle;
+
+    // 추가 구현
+    private Vector<String> roomVector = new Vector<>();
+    private JList<String> roomList = new JList<>(roomVector);
 
     public CreateRoomScreen(ClientWindow window) {
         this.window = window;
@@ -53,20 +63,32 @@ public class CreateRoomScreen extends JPanel {
         label.setForeground(Color.WHITE);
         labelPanel.add(label, BorderLayout.CENTER);
 
-        labelPanel.add(new SpacerPanel(1, 100), BorderLayout.SOUTH);
+        // 추가 구현
+        JButton b_refresh = new JButton("새로고침");
+        b_refresh.setFont(new Font("Dialog", Font.BOLD, 40));
+        b_refresh.setBackground(Color.GREEN);
+        labelPanel.add(b_refresh, BorderLayout.EAST);
+        b_refresh.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                refreshRoomList();
+            }
+        });
+
+        labelPanel.add(new SpacerPanel(1, 50), BorderLayout.SOUTH);
 
         return labelPanel;
     }
 
-    private JPanel createInputPanel() {
+    private JPanel createInputPanel() { // 외부 참조
         RoundedPanel containerPanel = new RoundedPanel(30);
         containerPanel.setBackground(new Color(255, 255, 255, 220));
         containerPanel.setLayout(new BorderLayout());
-        containerPanel.setPreferredSize(new Dimension(1000, 250));
+        containerPanel.setPreferredSize(new Dimension(1000, 500));
 
         JPanel flowTitlePanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
         flowTitlePanel.setOpaque(false);
-        flowTitlePanel.add(new SpacerPanel(900,60));
+        flowTitlePanel.add(new SpacerPanel(900,10));
 
         RoundedPanel titlePanel = new RoundedPanel(30);
         titlePanel.setLayout(new FlowLayout(FlowLayout.LEFT));
@@ -79,9 +101,11 @@ public class CreateRoomScreen extends JPanel {
         t_roomTitle.setForeground(new Color(245, 245, 220));
         t_roomTitle.setBorder(new EmptyBorder(3,10,0,0));
         t_roomTitle.addMouseListener(new InputRoomEvent(t_roomTitle));
+        t_roomTitle.addActionListener(new CreateRoomEvent(t_roomTitle, window));
 
         titlePanel.add(t_roomTitle);
         flowTitlePanel.add(titlePanel);
+        flowTitlePanel.add(createRoomListPanel());
 
         JPanel flowCreatePanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
         flowCreatePanel.setOpaque(false);
@@ -91,11 +115,6 @@ public class CreateRoomScreen extends JPanel {
         b_create.setBackground(Color.GREEN);
         b_create.addActionListener(new CreateRoomEvent(t_roomTitle, window));
 
-//        b_create.addActionListener(e -> {
-//            window.setRoomTitle(t_roomTitle.getText());
-//            window.showScreen("host");
-//        });
-
         flowCreatePanel.add(b_create);
 
         containerPanel.add(flowTitlePanel, BorderLayout.CENTER);
@@ -104,17 +123,59 @@ public class CreateRoomScreen extends JPanel {
         return containerPanel;
     }
 
+    // 추가 구현
+    public JPanel createRoomListPanel() {
+        RoundedPanel listPanel = new RoundedPanel(30);
+        listPanel.setBackground((new Color(255, 255, 255, 220)));
+        listPanel.setLayout(new BorderLayout());
+        listPanel.setPreferredSize(new Dimension(1000, 330));
+
+        roomList.setVisibleRowCount(12);
+        roomList.setFixedCellHeight(36);
+        roomList.setFont(new Font("Malgun Gothic", Font.PLAIN, 25));
+        roomList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+
+        JScrollPane scroll = new JScrollPane(roomList);
+        scroll.setBorder(BorderFactory.createEmptyBorder(12, 12, 12, 12));
+        scroll.getViewport().setOpaque(false);
+        scroll.setOpaque(false);
+
+        listPanel.add(scroll, BorderLayout.CENTER);
+        return listPanel;
+    }
+    public void refreshRoomList() {
+        updateRoomList(ConnectionManager.getHandler().getRoomList());
+        ClientSender.send(new RoomListRequestPacket());
+    }
+    public void updateRoomList(Map<String, Integer> rooms) {
+        roomVector.clear();
+        if (rooms == null || rooms.isEmpty()) {
+            roomVector.addElement("(현재 생성된 방이 없습니다)");
+            return;
+        }
+        for (Map.Entry<String, Integer> entry : rooms.entrySet()) {
+            roomVector.add(entry.getKey() + "                                   (" + entry.getValue() + "/4)");
+        }
+        roomList.setListData(roomVector);
+    }
+
+
     private JPanel createSouthButtonSection() {
         JPanel southPanel = new JPanel(new BorderLayout());
         southPanel.setOpaque(false);
-        southPanel.add(new SpacerPanel(1, 100), BorderLayout.NORTH);
+        southPanel.add(new SpacerPanel(1, 5), BorderLayout.NORTH);
 
         JPanel ExitPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
         ExitPanel.setOpaque(false);
         JButton exitButton = new JButton("   나가기   ");
         exitButton.setFont(new Font("Dialog", Font.BOLD, 40));
         exitButton.setBackground(Color.GREEN);
-        exitButton.addActionListener(e -> window.showScreen("main"));
+        exitButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                window.showScreen("main");
+            }
+        });
         ExitPanel.add(exitButton);
 
         southPanel.add(ExitPanel, BorderLayout.SOUTH);

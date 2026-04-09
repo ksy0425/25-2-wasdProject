@@ -2,8 +2,6 @@ package client.KeyEvent;
 
 import client.Screen.ClientWindow;
 import client.network.ClientSender;
-import server.ClientHandler;
-import shared.packet.CreateRoomRequestPacket;
 import shared.packet.JoinRoomRequestPacket;
 
 import javax.swing.*;
@@ -23,11 +21,9 @@ public class JoinRoomEvent implements ActionListener {
         String title = t_roomTitle.getText().trim();
         if (title.isEmpty()) {
             JOptionPane.showMessageDialog(null, "방 이름을 입력해주세요.", "알림", JOptionPane.WARNING_MESSAGE);
-            t_roomTitle.requestFocus(); // focus 다시 방 제목으로
+            t_roomTitle.requestFocus();
             return;
         }
         ClientSender.send(new JoinRoomRequestPacket(t_roomTitle.getText()));
-        window.setRoomTitle(t_roomTitle.getText());
-        window.showScreen("host");
     }
 }

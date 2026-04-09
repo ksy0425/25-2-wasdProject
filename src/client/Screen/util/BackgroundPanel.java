@@ -7,14 +7,13 @@ public class BackgroundPanel extends JPanel {
     private Image background;
 
     public BackgroundPanel(String path) {
-        background = new ImageIcon(getClass().getResource(path)).getImage();
+        background = new ImageIcon(getClass().getResource(path)).getImage(); // 외부 참조
     }
 
     @Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
 
-        // 프레임 크기에 맞게 배경 채우기
         g.drawImage(background, 0, 0, getWidth(), getHeight(), this);
     }
 }

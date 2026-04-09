@@ -6,6 +6,6 @@ import java.awt.*;
 public class SpacerPanel extends JPanel {
     public SpacerPanel(int width, int height) {
         setOpaque(false);
-        setPreferredSize(new Dimension(width, height));
+        setPreferredSize(new Dimension(width, height)); // 외부 참조
     }
 }

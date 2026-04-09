@@ -1,6 +1,9 @@
 package server;
 
+import shared.model.PlayerState;
 import shared.packet.*;
+
+import java.util.*;
 
 public class PacketHandler {
 
@@ -15,48 +18,137 @@ public class PacketHandler {
     }
 
     public void handle(Packet packet) {
+        System.out.println("[SERVER] PacketHandler.handle: " + packet.getClass().getName());
 
         if (packet instanceof LoginRequestPacket p) {
             handleLogin(p);
         } else if (packet instanceof CreateRoomRequestPacket p) {
             handleCreateRoom(p);
-
         } else if (packet instanceof JoinRoomRequestPacket p) {
             handleJoinRoom(p);
-
         } else if (packet instanceof LeaveRoomPacket p) {
             handleLeaveRoom(p);
-
+        } else if (packet instanceof  GameStartRequestPacket p) {
+            handleGameStart(p);
+        } else if (packet instanceof MovePacket p) {
+            System.out.println("[SERVER] instanceof MovePacket 통과!");
+            handleMove(p);
+        } else if (packet instanceof RoomListRequestPacket p) { // 추가 구현
+            handleRoomList(p);
         } else {
             window.printDisplay("알 수 없는 패킷: " + packet.getClass().getSimpleName());
         }
     }
 
     private void handleLogin(LoginRequestPacket packet) {
-        String nickname = client.getNickname();
-        int playerId = client.getPlayerId();
-        client.send(new LoginResponsePacket(nickname, playerId));
+        String nickname = packet.getNickname();
+        if(roomManager.check(nickname)) {
+            int playerId = roomManager.addClient(client, nickname);
+            client.setNickname(nickname);
+            client.setPlayerId(playerId);
+
+            window.printDisplay("플레이어 접속: ID=" + playerId + ", 닉네임=" + nickname);
+
+            client.send(new LoginResponsePacket(nickname, playerId, true, "Login Success"));
+        }
+        else {
+            client.send(new LoginResponsePacket(nickname, 0, false, nickname + " is already exist"));
+        }
     }
 
     private void handleCreateRoom(CreateRoomRequestPacket packet) {
-        boolean ok = roomManager.createRoom(packet.getRoomTitle(), client);
+        String title = packet.getRoomTitle();
+        boolean ok = roomManager.createRoom(title, client);
+
+        GameRoom room = roomManager.getRoom(title);
+        int hostId = (ok && room != null) ? room.getHostId() : -1;
 
         client.send(new CreateRoomResponsePacket(
-                ok, ok ? "" : "이미 존재하는 방 제목"
+                title, hostId, ok, ok ? "" : "이미 존재하는 방 제목입니다."
         ));
+
+        if (ok && room != null) {
+            room.broadcastRoomInfo();
+        }
     }
 
     private void handleJoinRoom(JoinRoomRequestPacket packet) {
-        boolean ok = roomManager.joinRoom(packet.getRoomTitle(), client);
+        String title = packet.getRoomTitle();
+
+        GameRoom room = roomManager.getRoom(title);
+        if (room == null) {
+            client.send(new JoinRoomResponsePacket(title, -1, false, "방이 존재하지 않습니다."));
+            return;
+        }
+        boolean ok = roomManager.joinRoom(title, client);
 
         client.send(new JoinRoomResponsePacket(
-                ok, ok ? "" : "인원 초과 또는 방 없음"
+                title,
+                room.getHostId(),
+                ok,
+                ok ? "" : "인원 초과 또는 방 없음"
         ));
+
+        if (ok) {
+            room.broadcastRoomInfo();
+        }
     }
 
     private void handleLeaveRoom(LeaveRoomPacket packet) {
         roomManager.leaveRoom(client);
+    }
 
-        roomManager.broadcastLobby(new PlayerLeftRoomPacket(client.getPlayerId()));
+    private void handleGameStart(GameStartRequestPacket packet) {
+        List<PlayerState> players = packet.getPlayerStateList();
+
+        if (players.size() < 4) {
+            client.send(new GameStartResponsePacket(null, false));
+            return;
+        }
+
+        List<String> keys = new ArrayList<>();
+        keys.add("w");
+        keys.add("a");
+        keys.add("s");
+        keys.add("d");
+
+        Collections.shuffle(keys); // 외부 참조
+
+        Map<Integer, String> playersKey = new HashMap<>();
+
+        for (int i = 0; i < players.size() && i < keys.size(); i++) {
+            PlayerState ps = players.get(i);
+            int playerId = ps.getPlayerId();
+            String key = keys.get(i);
+
+            playersKey.put(playerId, key);
+        }
+        GameRoom room = roomManager.getRoom(packet.getTitle());
+        if (room != null) {
+            room.broadcast(new GameStartResponsePacket(playersKey, true));
+            window.printDisplay("[" + room.getRoomTitle() + "]" + " 방 게임 시작!!!");
+            room.startGameLoop();
+        }
+    }
+
+    private void handleMove(MovePacket packet) {
+        window.printDisplay("[SERVER] MovePacket from playerId=" + packet.getPlayerId()
+                + ", dir=" + packet.getDirection());
+        GameRoom room = client.getCurrentRoom();
+        if (room == null) return;
+
+        System.out.println("====" + packet.getPlayerId() +", " + packet.getDirection()+"====");
+        room.handleMove(packet);
+    }
+
+    // 추가 구현
+    private void handleRoomList(RoomListRequestPacket packet) {
+        Map<String, Integer> snapshot = new LinkedHashMap<>();
+
+        for (GameRoom room : roomManager.getRooms().values()) {
+            snapshot.put(room.getRoomTitle(), room.getPlayerCount());
+        }
+
+        client.send(new RoomListResponsePacket(snapshot));
     }
 }

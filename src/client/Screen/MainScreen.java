@@ -2,11 +2,12 @@ package client.Screen;
 
 import client.Screen.util.BackgroundPanel;
 import client.Screen.util.ImagePanel;
-import client.KeyEvent.StartEvent;
 import client.KeyEvent.ExitEvent;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 public class MainScreen extends JPanel {
     private JButton b_host, b_participation, b_exit;
@@ -27,12 +28,27 @@ public class MainScreen extends JPanel {
     }
 
     private void initActions() {
-        b_host.addActionListener(e -> window.showScreen("create"));
-        b_participation.addActionListener(e -> window.showScreen("join"));
-        b_exit.addActionListener(e -> System.exit(0));
+        b_host.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                window.showScreen("create");
+            }
+        });
+        b_participation.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                window.showScreen("join");
+            }
+        });
+        b_exit.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                System.exit(0);
+            }
+        });
     }
 
-    private void buildGUI(JPanel bgPanel) {
+    private void buildGUI(JPanel bgPanel) { // 외부 참조
         JPanel centerPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
         centerPanel.setOpaque(false);
         bgPanel.add(centerPanel, BorderLayout.CENTER);
@@ -93,7 +109,7 @@ public class MainScreen extends JPanel {
         return controlPanel;
     }
 
-    private JPanel createButtonCell(String text) {
+    private JPanel createButtonCell(String text) { // 외부 참조
         JPanel panel = new JPanel(new FlowLayout(FlowLayout.CENTER));
         panel.setOpaque(false);
 
