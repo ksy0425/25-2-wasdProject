@@ -1,4 +1,6 @@
 package shared.packet;
 
-public class Packet {
+import java.io.Serializable;
+
+public abstract class Packet implements Serializable {
 }
